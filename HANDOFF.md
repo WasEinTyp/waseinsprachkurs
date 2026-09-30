@@ -1,6 +1,6 @@
 # HANDOFF – ¡Qué Curso! (WasEinSpanischKurs)
 
-> Stand: 30.09.2026 · 4.000 Wörter, ehrliche Stufen-Texte, „Kann gerade nicht hören/sprechen“, **Verben-Bereich** und **Zeiten & Fragen** sind umgesetzt.
+> Stand: 30.09.2026 (abends) · **Web-App-Veröffentlichung (Weg A) vorbereitet** · 4.000 Wörter, ehrliche Stufen-Texte, „Kann gerade nicht hören/sprechen“, **Verben-Bereich** und **Zeiten & Fragen** sind umgesetzt.
 > Sprache mit dem Nutzer: **Deutsch** (Du-Form). Code-Kommentare & UI-Texte: Deutsch.
 
 ---
@@ -48,6 +48,8 @@ Nation (2006): 98 % Textabdeckung → ca. 6–7k Wortfamilien (Hören), 8–9k (
 - **Ansichten:** `js/screens-verbs.js` (Klick-Handler hängt an `#view.onclick`, wird über `screens.X.leave` entfernt), Start-Karten `WSK.homeAreas()`, Navigation: 6 Einträge unten (Heute, Verben, Zeiten, Sätze, Wörter, Spiele), Guía nur in der Sidebar + Glühbirne in der Topbar (mobil).
 - **Tests:** `tools/drills.json` spielt alle Übungsarten richtig und falsch durch (Hilfsfunktion `__solve`), prüft Modals, Wiederholung, beide Tabs, mobile Ansicht. `tools/cdp.mjs` schließt Edge jetzt sauber (`Browser.close`) und nutzt einen Zufallsport – vorher konnten hängengebliebene Edge-Instanzen den Port blockieren und alte Spielstände „vererben“.
 - **Bekannte Grenzen:** Verben ohne Partizip-Sonderformen wie *freír, reír, construir, caber, valer* fehlen; Imperativ ist (noch) nicht enthalten; Inhalte nicht muttersprachlich gegengelesen.
+
+**Web-App / iPhone (Weg A, vorbereitet 30.09.):** Nutzer will die App aufs iPhone (früher Sideloadly-IPA). Gewählt: installierbare Web-App über **GitHub Pages**. Fertig: `manifest.webmanifest`, `sw.js` (Cache-first, versioniert; Version + Dateiliste schreibt **`node tools/build-pwa.js`** – nach jeder App-Änderung ausführen, macht `Veröffentlichen.bat` automatisch), `js/pwa.js` (registriert den SW nur auf https, lokal nur mit `?pwa=1`), Icons `assets/icons/` (`python tools/make-icons.py`), iOS-Meta-Tags in `index.html`, `.nojekyll`, `.gitignore`, lokales Git-Repo (Branch `main`, 1 Commit, **Autor-Adresse anonym** `timo@users.noreply.github.com`, weil die globale Git-Mail eine Uni-Adresse ist). Videos (.mp4) gehen bewusst am SW vorbei (Safari braucht Range-Requests) → offline Standbild. Getestet: SW installiert, 43 Dateien im Cache, App startet bei **gestopptem Server** (`tools/pwa-1.json` dann Server stoppen, dann `tools/pwa-2.json`, jeweils mit `--keep-profile`). **Offen / beim Nutzer:** GitHub-Repo anlegen (Public), `git remote add origin …`, `git push -u origin main`, Pages aktivieren (Anleitung in README, Abschnitt „Aufs iPhone“). Kein `gh`-CLI installiert. iOS-Hinweise: Lernstand der Home-Bildschirm-App ist von Safari getrennt (Export/Import), Spracherkennung evtl. nicht verfügbar (nicht auf echtem iPhone getestet).
 
 **Ideen für später:** Satz-Kurs erweitern (derzeit 40 Themen/400 Sätze), Lernpfad mit 50 Einheiten pro Stufe ggf. einklappbar machen, Inhalte muttersprachlich gegenlesen lassen.
 
@@ -108,6 +110,9 @@ tools/cdp.mjs           Headless-Edge-Testtreiber
 tools/smoke.json        Rauchtest (Onboarding, alle Routen, alle Spiele, Wort- & Satz-Lektion)
 tools/quiet.json        Test „Kann gerade nicht hören/sprechen“
 tools/drills.json       Test Verben, Zeiten & Fragen (alle Übungsarten)
+tools/pwa-1.json / pwa-2.json   Offline-Test (Service Worker), siehe oben
+tools/build-pwa.js      sw.js aktualisieren (Version, Dateiliste)
+tools/make-icons.py     App-Icons erzeugen
 tools/conj-test.js      Test der Konjugations-Engine
 tools/migrate.json      Test Spielstand-Migration (dataV 1 → 2), Presets, Guía, Home
 ```

@@ -55,6 +55,31 @@ Ist das Ziel erreicht, schlägt Sol automatisch die nächste Etappe vor (1.000 W
 
 **„Gelernt“** heißt: mindestens einmal nach einer Nacht Schlaf richtig abgerufen (Stufe 2). **„Gemeistert“** heißt Stufe 5.
 
+## Aufs iPhone (als Web-App, ohne App Store)
+
+Die App ist eine **installierbare Web-App**: Sie bekommt ein Symbol auf dem Home-Bildschirm, startet im Vollbild und läuft **auch ohne Internet**.
+
+**Einmalig einrichten**
+
+1. Bei [github.com](https://github.com) anmelden und ein neues Repository anlegen ([github.com/new](https://github.com/new)): Name `que-curso`, **Public**, *kein* Häkchen bei „Add a README“. (Kostenloses GitHub Pages geht nur mit öffentlichen Repositories – jeder mit dem Link kann die App also öffnen.)
+2. Im Projektordner ein Terminal öffnen (Rechtsklick → „Im Terminal öffnen“) und, mit deinem GitHub-Namen, eingeben:
+   ```bash
+   git remote add origin https://github.com/DEINNAME/que-curso.git
+   git push -u origin main
+   ```
+   Beim ersten Mal öffnet sich ein Fenster für die GitHub-Anmeldung. Das lokale Repository ist schon angelegt (Autor-Adresse anonym: `timo@users.noreply.github.com` – wenn du willst, tausche sie gegen deine persönliche GitHub-Noreply-Adresse: `git config user.email …`).
+3. Auf GitHub: Repository → **Settings → Pages** → „Deploy from a branch“ → Branch `main`, Ordner `/ (root)` → **Save**. Nach etwa einer Minute steht oben die Adresse, z. B. `https://DEINNAME.github.io/que-curso/`.
+4. Auf dem iPhone die Adresse in **Safari** öffnen (nicht Chrome) → Teilen-Symbol → **„Zum Home-Bildschirm“** → Hinzufügen. Die App einmal mit Internet öffnen, damit sie sich für offline speichert.
+
+**Updates hochladen:** `Veröffentlichen.bat` doppelklicken (aktualisiert die Offline-Version, sichert und lädt hoch). Auf dem iPhone die App komplett schließen und neu öffnen – manchmal zweimal.
+
+**Gut zu wissen**
+
+- Der Lernstand der Home-Bildschirm-App ist **getrennt von Safari**. Wenn du schon im Browser gelernt hast: dort **Menü → Daten → Exportieren**, in der App **Importieren**. Mach auch sonst ab und zu ein Backup.
+- Sprachausgabe funktioniert. Die **Spracherkennung** (Sprech-Übungen) kann in Home-Bildschirm-Apps auf dem iPhone fehlen – dann nutzt du „Kann gerade nicht sprechen“ und tippst.
+- Die kurzen Sol-Videos brauchen Internet; ohne Netz zeigt die App ein Standbild.
+- Lokal (Server starten.bat) ist der Offline-Modus bewusst aus, damit deine Änderungen sofort sichtbar sind. Zum Testen: `http://localhost:5173/?pwa=1`.
+
 ## Coach Sol
 
 Sol ist ein eigens für die App entworfener 3D-Charakter, erstellt mit **Higgsfield**:
@@ -96,6 +121,9 @@ js/games.js           Spielhalle (8 Spiele)
 js/screens.js         Alle Ansichten, Ziel-Assistent, Onboarding
 js/screens-verbs.js   Ansichten „Verben“ und „Zeiten & Fragen“
 js/app.js             Navigation & Start
+js/pwa.js             Offline-Modus (Service Worker registrieren)
+sw.js                 Service Worker (Version/Dateiliste von tools/build-pwa.js)
+manifest.webmanifest  Web-App-Daten (Name, Icons, Vollbild)
 ```
 
 Zum Testen eines anderen Datums: `index.html?today=2026-10-01`.
