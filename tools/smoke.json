@@ -1,0 +1,12 @@
+[
+ { "size": [1280, 860], "dark": false, "nav": "http://localhost:5173/?today=2026-09-25", "wait": 2500 },
+ { "shot": "smoke-01-onboarding.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const c=(s)=>document.querySelector(s).click(); c('.onboard [data-next]'); await w(200); c('[data-save-name]'); await w(200); c('.onboard [data-next]'); await w(200); c('.onboard [data-next]'); await w(300); c('[data-finish]'); await w(900); return document.querySelector('.hero h1').textContent; })()" },
+ { "shot": "smoke-02-home.png" },
+ { "eval": "(async()=>{ for (const r of ['sents','verbs','tenses','games','words','guide','stats','settings','home']) { location.hash = '#/' + r; await new Promise(x=>setTimeout(x,500)); } return 'routes ok'; })()" },
+ { "eval": "(async()=>{ for (const g of WSK.games.list.map(x=>x.id)) { WSK.games.start(g); await new Promise(x=>setTimeout(x,200)); WSK.games.close(); } return 'games ok'; })()" },
+ { "eval": "(async()=>{ WSK.startLesson(); await new Promise(x=>setTimeout(x,600)); const c = WSK.session.current(); return 'lesson item ' + c.item.kind + ' ' + c.item.id; })()" },
+ { "shot": "smoke-03-lesson.png" },
+ { "eval": "(async()=>{ document.querySelector('.s-close').click(); await new Promise(x=>setTimeout(x,300)); WSK.startSentLesson(); await new Promise(x=>setTimeout(x,600)); return 'sent item ' + WSK.session.current().item.kind; })()" },
+ { "shot": "smoke-04-sentence.png" }
+]

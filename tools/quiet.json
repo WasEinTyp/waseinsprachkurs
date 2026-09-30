@@ -1,0 +1,23 @@
+[
+ { "size": [1280, 860], "dark": false, "nav": "http://localhost:5173/?today=2026-09-25", "wait": 2500 },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const c=(s)=>document.querySelector(s).click(); c('.onboard [data-next]'); await w(200); c('[data-save-name]'); await w(200); c('.onboard [data-next]'); await w(200); c('.onboard [data-next]'); await w(300); c('[data-finish]'); await w(700); return 'onboarded; units ' + WSK.units.length + ', words ' + WSK.words.length + ', #26 ' + WSK.units[25].level + ' ' + WSK.units[25].title + ', #51 ' + WSK.units[50].level + ' ' + WSK.units[50].title + ', voices ' + WSK.tts.voices.length + ', stt ' + WSK.stt.supported; })()" },
+ { "eval": "(async()=>{ WSK.session.demo('words', [{kind:'listen', id:'hola'}, {kind:'speak', id:'gracias'}]); await new Promise(r=>setTimeout(r,500)); return 'listen: box=' + !!document.querySelector('.s-stage .listen-box') + ' btn=' + document.querySelector('.s-foot [data-quiet]').textContent; })()" },
+ { "shot": "quiet-01-listen.png" },
+ { "eval": "(async()=>{ document.querySelector('.s-foot [data-quiet]').click(); await new Promise(r=>setTimeout(r,500)); return 'quiet listen: card=' + (document.querySelector('.s-stage .quiet-card')||{}).textContent + ' | btn=' + document.querySelector('.s-foot [data-quiet]').textContent + ' | quiet=' + WSK.session.quiet('listen'); })()" },
+ { "shot": "quiet-02-listen-text.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.opt[data-id=\"hola\"]').click(); await w(700); document.querySelector('.s-sheet [data-next]').click(); await w(500); const c = WSK.session.current(); return 'next: ' + c.item.kind + ' speakUI=' + !!document.querySelector('.mic-big') + ' btn=' + ((document.querySelector('.s-foot [data-quiet]')||{}).textContent); })()" },
+ { "shot": "quiet-03-speak.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const b = document.querySelector('.s-foot [data-quiet]'); if (b) b.click(); await w(500); const inp = document.querySelector('#ans'); if (!inp) return 'kein Eingabefeld'; const head = document.querySelector('.ex-label').textContent; inp.value = 'gracias'; inp.dispatchEvent(new Event('input')); document.querySelector('[data-check]').click(); await w(600); return 'typed: ' + head + ' → sheet ok=' + document.querySelector('.s-sheet').classList.contains('ok'); })()" },
+ { "shot": "quiet-04-speak-typed.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.s-sheet [data-next]').click(); await w(900); const s = WSK.sents; WSK.session.demo('sents', [{kind:'slisten', id:s[3].id}, {kind:'sdict', id:s[4].id}, {kind:'sspeak', id:s[5].id}]); await w(500); return 'slisten quiet: ' + ((document.querySelector('.s-stage .quiet-card')||{}).textContent) + ' | label ' + document.querySelector('.ex-label').textContent; })()" },
+ { "shot": "quiet-05-slisten-text.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.opts .opt').click(); await w(700); document.querySelector('.s-sheet [data-next]').click(); await w(500); const c = WSK.session.current(); return 'sdict quiet → ' + c.item.kind + ' gap=' + c.item.gap + ' | ' + document.querySelector('.ex-label').textContent + ' | ' + document.querySelector('.s-es').textContent; })()" },
+ { "shot": "quiet-06-sdict-gap.png" },
+ { "size": [390, 800, true] },
+ { "sleep": 400 },
+ { "shot": "quiet-07-mobile.png" },
+ { "size": [1280, 860] },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const inp = document.querySelector('#ans'); inp.value = WSK.session.current().item.gap; document.querySelector('[data-check]').click(); await w(700); document.querySelector('.s-sheet [data-next]').click(); await w(500); return 'sspeak (quiet speak) → ' + document.querySelector('.ex-label').textContent + ' | ' + ((document.querySelector('.s-de.big')||{}).textContent); })()" },
+ { "shot": "quiet-08-sspeak-typed.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.s-foot [data-quiet]').click(); await w(500); return 'speak again: mic=' + !!document.querySelector('.mic-big') + ' quietSpeak=' + WSK.session.quiet('speak'); })()" }
+]

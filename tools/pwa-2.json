@@ -1,0 +1,7 @@
+[
+ { "size": [390, 820, true], "nav": "http://localhost:5173/?pwa=1&today=2026-09-30#/verbs", "wait": 3500 },
+ { "eval": "(async()=>{ await new Promise(r=>setTimeout(r,800)); const v = document.querySelectorAll('.verb-chip').length; const css = getComputedStyle(document.body).backgroundColor; return 'OFFLINE geladen: Verb-Chips ' + v + ' | WSK ' + (typeof WSK) + ' | Body-Farbe ' + css + ' | Verben-Überschrift: ' + (document.querySelector('h1')||{}).textContent; })()" },
+ { "shot": "pwa-offline.png" },
+ { "eval": "(async()=>{ location.hash = '#/home'; await new Promise(r=>setTimeout(r,900)); const vid = document.querySelector('.sol-stage video'); const img = document.querySelector('.sol-stage img'); return 'Home offline: Sol-Video ' + !!vid + ' / Standbild ' + !!img + ' | Hero: ' + (document.querySelector('.hero h1')||{}).textContent; })()" },
+ { "shot": "pwa-offline-home.png" }
+]

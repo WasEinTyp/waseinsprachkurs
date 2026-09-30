@@ -1,0 +1,12 @@
+[
+ { "size": [1280, 860], "nav": "http://localhost:5173/?today=2026-09-25", "wait": 2000 },
+ { "eval": "(()=>{ WSK.save = () => {}; const old = { v: 1, created: '2026-09-24', onboarded: true, settings: { focusUnit: 30, targetWords: 500 }, words: { 'hola': { lvl: 3, due: '2026-09-27', intro: '2026-09-24', last: '2026-09-24', c: 2, w: 0, lapses: 0 } }, sents: {}, days: {}, xp: 40, streak: { count: 1, best: 1, last: '2026-09-24' }, ach: {}, hs: {}, totals: { ok: 2, bad: 0, secs: 60 }, goals: [] }; localStorage.setItem('queCurso.v1', JSON.stringify(old)); return 'alter Stand gespeichert (focusUnit 30 = alte Einheit 31)'; })()" },
+ { "nav": "http://localhost:5173/?today=2026-09-25", "wait": 2000 },
+ { "eval": "(()=>{ const s = WSK.state; const f = s.settings.focusUnit; return 'nach Migration: dataV=' + s.dataV + ' focusUnit=' + f + ' → ' + WSK.units[f].level + ' ' + WSK.units[f].title + ' | hola lvl ' + s.words.hola.lvl + ' | Lernpfad-Knoten A1: ' + WSK.units.filter(u => u.level==='A1').length; })()" },
+ { "eval": "(async()=>{ location.hash = '#/settings'; await new Promise(r=>setTimeout(r,600)); const b = [...document.querySelectorAll('.preset small')].map(x=>x.textContent).join(', '); const sel = document.querySelector('[data-set=focusUnit]'); return 'Presets: ' + b + ' | Fokus-Auswahl: ' + sel.options[sel.selectedIndex].textContent; })()" },
+ { "shot": "migrate-01-settings.png" },
+ { "eval": "(async()=>{ location.hash = '#/guide'; await new Promise(r=>setTimeout(r,500)); const t = [...document.querySelectorAll('[data-tab], .g-tab, button')].find(b => /Stufen/.test(b.textContent)); if (t) t.click(); await new Promise(r=>setTimeout(r,500)); return 'Guía Stufen: ' + !!document.querySelector('.g-table') + ' | ' + (document.querySelector('.g-level h4')||{}).textContent; })()" },
+ { "shot": "migrate-02-guide-stufen.png", "full": true },
+ { "eval": "(async()=>{ location.hash = '#/home'; await new Promise(r=>setTimeout(r,600)); return 'Home: ' + document.querySelector('.level-card .lv-list').textContent.replace(/\\s+/g,' ').trim(); })()" },
+ { "shot": "migrate-03-home.png", "full": true }
+]

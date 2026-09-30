@@ -1,0 +1,4 @@
+[
+ { "size": [390, 820, true], "nav": "http://localhost:5173/?pwa=1&today=2026-09-30", "wait": 4000 },
+ { "eval": "(async()=>{ const reg = await navigator.serviceWorker.getRegistration(); await navigator.serviceWorker.ready; await new Promise(r=>setTimeout(r,1500)); const keys = await caches.keys(); const c = keys.find(k=>k.startsWith('que-curso-') && !k.includes('fonts')); const n = c ? (await (await caches.open(c)).keys()).length : 0; return 'SW aktiv: ' + !!(reg && reg.active) + ' | controller: ' + !!navigator.serviceWorker.controller + ' | caches: ' + keys.join(', ') + ' | Dateien im Cache: ' + n + ' | manifest: ' + document.querySelector('link[rel=manifest]').href; })()" }
+]

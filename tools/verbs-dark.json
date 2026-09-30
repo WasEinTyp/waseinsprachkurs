@@ -1,0 +1,9 @@
+[
+ { "size": [1280, 900], "dark": true, "nav": "http://localhost:5173/?today=2026-09-30", "wait": 2500 },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const c=(s)=>document.querySelector(s).click(); c('.onboard [data-next]'); await w(200); c('[data-save-name]'); await w(200); c('.onboard [data-next]'); await w(200); c('.onboard [data-next]'); await w(300); c('[data-finish]'); await w(800); location.hash = '#/verbs'; await w(700); document.querySelector('[data-verb=\"tener\"]').click(); await w(500); return 'dark verbs ok'; })()" },
+ { "shot": "dark-01-verb-modal.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.modal-x').click(); await w(400); WSK.startVerbLesson('pres', ['hablar']); await w(600); document.querySelector('[data-go]').click(); await w(500); return WSK.session.current().item.kind; })()" },
+ { "shot": "dark-02-exercise.png" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.s-close').click(); await w(300); const y = document.querySelector('.modal .btn.danger'); if (y) y.click(); await w(400); location.hash = '#/tenses'; await w(700); document.querySelector('[data-jump=\"subj\"]').click(); await w(700); return 'dark tenses ok'; })()" },
+ { "shot": "dark-03-tenses.png" }
+]
