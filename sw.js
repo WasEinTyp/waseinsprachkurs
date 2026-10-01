@@ -4,7 +4,7 @@
  * Strategie: alle App-Dateien beim Installieren in einen versionierten Cache legen und von dort ausliefern
  * (Cache-first). Videos (.mp4) laufen bewusst am Service Worker vorbei – Safari braucht dafür Range-Anfragen;
  * ohne Netz zeigt die App dann das Standbild. Schriften von Google werden beim ersten Besuch zwischengespeichert. */
-const VERSION = '39700a3f03';
+const VERSION = '4f273c5452';
 const FILES = [
   'assets/icons/apple-touch-icon.png',
   'assets/icons/icon-192.png',
@@ -22,7 +22,11 @@ const FILES = [
   'assets/sol/think.webp',
   'assets/sol/wave.webp',
   'css/extra.css',
+  'css/mobile.css',
+  'css/podcast.css',
+  'css/recs.css',
   'css/styles.css',
+  'css/talk.css',
   'css/verbs.css',
   'index.html',
   'js/app.js',
@@ -31,11 +35,20 @@ const FILES = [
   'js/drills.js',
   'js/games.js',
   'js/guide.js',
+  'js/podcast-build.js',
+  'js/podcast.js',
   'js/pwa.js',
+  'js/recs.js',
+  'js/screens-learn.js',
   'js/screens-verbs.js',
   'js/screens.js',
   'js/sentences.js',
   'js/session.js',
+  'js/talk-a1.js',
+  'js/talk-a2.js',
+  'js/talk-b.js',
+  'js/talk-engine.js',
+  'js/talk.js',
   'js/tenses-data.js',
   'js/ui.js',
   'js/verbs-data.js',

@@ -1,6 +1,6 @@
 # HANDOFF – ¡Qué Curso! (WasEinSpanischKurs)
 
-> Stand: 30.09.2026 (abends) · **Web-App-Veröffentlichung (Weg A) vorbereitet** · 4.000 Wörter, ehrliche Stufen-Texte, „Kann gerade nicht hören/sprechen“, **Verben-Bereich** und **Zeiten & Fragen** sind umgesetzt.
+> Stand: 01.10.2026 · **Gespräche, Podcast, Empfehlungen und Handy-Layout gebaut (nicht committet)** · Web-App-Veröffentlichung (Weg A) vorbereitet · 4.000 Wörter, ehrliche Stufen-Texte, „Kann gerade nicht hören/sprechen“, **Verben-Bereich** und **Zeiten & Fragen** sind umgesetzt.
 > Sprache mit dem Nutzer: **Deutsch** (Du-Form). Code-Kommentare & UI-Texte: Deutsch.
 
 ---
@@ -49,6 +49,16 @@ Nation (2006): 98 % Textabdeckung → ca. 6–7k Wortfamilien (Hören), 8–9k (
 - **Tests:** `tools/drills.json` spielt alle Übungsarten richtig und falsch durch (Hilfsfunktion `__solve`), prüft Modals, Wiederholung, beide Tabs, mobile Ansicht. `tools/cdp.mjs` schließt Edge jetzt sauber (`Browser.close`) und nutzt einen Zufallsport – vorher konnten hängengebliebene Edge-Instanzen den Port blockieren und alte Spielstände „vererben“.
 - **Bekannte Grenzen:** Verben ohne Partizip-Sonderformen wie *freír, reír, construir, caber, valer* fehlen; Imperativ ist (noch) nicht enthalten; Inhalte nicht muttersprachlich gegengelesen.
 
+**Neu (01.10.) – Gespräch, Podcast, Empfehlungen, Handy-Layout** (Nutzerwünsche: Podcast-Modus, Gespräch-Modus mit Hören/Sprechen/Lesen/Schreiben, Empfehlungen auf der Startseite „ab einem gewissen Punkt“, KI-Frage klären, Layout am Handy perfekt, **nicht committen**, nur erklären wie).
+- **Gespräche (ohne KI)** – `js/talk-a1.js, talk-a2.js, talk-b.js` (25 Drehbücher: A1 8, A2 7, B1 5, B2 5), `js/talk-engine.js` (rein, ohne DOM: `WSK.talk.parse/judge/distractors/points/stars`), `js/talk.js` (Liste `#/talk`, Chat-Overlay `#talk`). Skriptformat (Kopfkommentar in talk-a1.js): `P: es | de` (Gegenüber), `U: Muster | Aufgabe(de) | Variante / Variante | Schlüsselwörter` (du), `U=` (weitere Antwort an derselben Stelle), `R:` (Reaktion auf genau diese Antwort), `{name}` = Nutzername. **Schlüsselwörter:** `a|b` = eines davon, `+` = und, `;` = oder, `!x` = darf nicht vorkommen, `*` = mindestens ein weiteres Wort, `~regex` = Muster für einzelne Wörter (ohne Akzente, z. B. `~ria$` für Condicional). Der 4. Feld-Rest enthält selbst `|` (Parser setzt ab Feld 4 zusammen). **Wertung:** perfekt (`checkSentence` gegen Muster/Varianten) → 1, verstanden (Schlüsselwörter) → .85, begrenzt durch Hilfe-Stufe (Tipp .7, Bausteine .45, Lösung .2) und Fehlversuche; Auswahl-Modus max .75; Sterne ≥ .85 → 3, ≥ .6 → 2. Fortschritt `state.talks[id] = {runs, best, pct, last}`, Tageszähler `day.tk`. Modi (Settings `talkIn` speak/type/choose, `talkHear` show/hide, `talkTrans`), „Kann gerade nicht hören/sprechen“ über `WSK.session.setQuiet` (feuert jetzt das Event `wsk:quiet`). **Tests:** `node tools/talk-test.js` (jede Musterantwort/Variante wird erkannt, Unsinn nirgends, Auswahl-Modus hat Ablenker), `tools/talk.json` (UI). Ehrliche Grenze: kein freies Gespräch, Grammatik nur grob; eine KI bräuchte Internet + Schlüssel + Server (Schlüssel im öffentlichen Repo wären offen) – bewusst nicht gebaut.
+- **Podcast** – `js/podcast-build.js` (rein: `WSK.podcast.build.daily/unit/talk/verbs`, `est/itemSec/epSec`), `js/podcast.js` (Player `#pod`, Bildschirm `#/podcast`). Folge = Stücke (items) aus Schritten `say` (lang es|de, alt = 2. Stimme) / `pause` (label think|speak, wird mit `podPause` skaliert) / `cue`. Tages-Podcast wählt echte Dauer (5/10/20 Min) aus fälligen Wörtern, Sätzen, Verben + Vorschau neuer Wörter; Anfänger (< 4 Wörter) bekommen eine Vorschau. Hörspiel-Modi `listen/shadow/role`. Gesprochen wird mit der Browser-Sprachausgabe (keine Audio-Dateien): `WSK.tts.speak(text, {lang:'de'|…, alt, rate})`, deutsche Stimme `deVoice()`, zweite spanische Stimme `altVoice()` (nach Möglichkeit anderes Geschlecht, sonst tieferer Pitch). Bildschirm wach: `WSK.wake.on/off` (Wake Lock). **Grenze:** läuft nicht bei gesperrtem Bildschirm / im Hintergrund (iOS-Browser). Fortschritt `state.pod = {eps, secs, last}`; Erfolge `pod1`, `pod60`, `talk1`, `talk10`. Test-Hooks: `WSK.podcast.fastStart = true` (alle Pausen/Stimmen übersprungen), `WSK.podcast.demo(true)`, `WSK.talk.demo(true)`. Tests: `node tools/podcast-test.js`, `tools/podcast.json`, `tools/podcast2.json`.
+- **Empfehlungen** – `js/recs.js`: 17 Empfehlungen mit Tor (z. B. „ab 30 Wörtern“, „nach 3 Gesprächen“, „ab Tag 4“), Begründung („Warum hilft das?“), Aktion; verschwinden nach Nutzung (`state.recs[id].tried`) oder „Später“ (3 Tage, `snooze`). `WSK.homeRecs()` / `WSK.bindRecs(view)` hängen an der Startseite; „Alle Tipps“-Fenster zeigt offen/gesperrt/erledigt. `state.lastBackup` wird beim Export gesetzt (Tipp „Sichere deinen Lernstand“). Test: `tools/recs.json`.
+- **Navigation neu:** unten nur 5 Einträge (Heute · Lernen · Gespräch · Podcast · Spiele); `#/learn` (js/screens-learn.js, `WSK.areaStats()`) bündelt Wörter, Sätze, Verben, Zeiten & Fragen. Desktop-Seitenleiste zeigt alle Bereiche einzeln. Startseite: 4 Bereichskarten (Gespräch, Podcast, Verben, Zeiten & Fragen).
+- **Handy-Layout (css/mobile.css, zuletzt geladen):** Auslöser des Seitwärts-Scrollens war v. a. die **obere Leiste (395 px Mindestbreite)** – jetzt kompakt (Markenname erst ab 380 px), dazu Chip-Reihen (Stufen-Tabs, Filter, Guía-Reiter) mit Umbruch statt Scrollen, Lernpfad-Wellen im Rand, Tabellen ohne Mindestbreite, `minmax(min(N px,100%),…)` bei allen Rastern, Eingabefelder ≥ 16 px (kein iOS-Zoom), `dvh`, Safe-Area-Ränder, Tastatur-Logik (`html.kb-open`, `--vvh/--vvt` per `visualViewport` in app.js), Spiele-Kopfzeile bricht um. **Test:** `node tools/gen-mobile.js [320,390]` erzeugt `tools/mobile.json` (53 Szenen × 5 Breiten: alle Ansichten, Reiter, Fenster, Übungsarten, Spiele, Gespräch, Podcast, Onboarding); `node --experimental-websocket tools/cdp.mjs tools/mobile.json | grep -v ' ok$'` muss leer sein. Wichtig: die Messung nutzt `mobile:false` (genaue Layoutbreite) – mit `mobile:true` weitet Chrome den Layout-Viewport bei Überlauf auf und verfälscht `innerWidth`.
+- **Werkzeug-Eigenheit (wichtig für Folge-Sessions):** Das Bash-Tool **verschluckt doppelte Backslashes** (aus zwei wird einer, dadurch wird z. B. `\b` in Regex zu einem Steuerzeichen) und scheiterte bei großen Heredocs mit Spezialzeichen. Dateien mit Regex/Backslashes → Write-Tool benutzen; Patch-Skripte (`patch(path, [(alt, neu)])` mit Eindeutigkeitsprüfung) als `.py` per Write in den Scratchpad schreiben und ausführen.
+- **Windows-Batchdateien (Fehler 01.10. behoben):** `Veröffentlichen.bat` und `Server starten.bat` müssen **nur ASCII und CRLF** sein (UTF-8 mit Umlauten + LF ließ cmd.exe in Fetzen parsen: „Der Befehl dp0 …“). Sie wurden per Skript (bytes mit `\r\n`) neu geschrieben, `.gitattributes` erzwingt CRLF; `node`/`git` werden mit `call` gestartet. Getestet in einer Sandbox mit Attrappen. Das Repository des Nutzers: `WasEinTyp/waseinsprachkurs` (Branch `main`, die ersten beiden Commits sind bereits gepusht); der Push nutzt `git push -u origin main`.
+- **Nicht committet** (Nutzerwunsch): Der Stand liegt nur im Arbeitsordner; `node tools/build-pwa.js` wurde zuletzt am Ende der Session ausgeführt (sw.js aktuell). Veröffentlichen: `Veröffentlichen.bat` oder `node tools/build-pwa.js` + `git add -A` + `git commit` + `git push`.
+
 **Web-App / iPhone (Weg A, vorbereitet 30.09.):** Nutzer will die App aufs iPhone (früher Sideloadly-IPA). Gewählt: installierbare Web-App über **GitHub Pages**. Fertig: `manifest.webmanifest`, `sw.js` (Cache-first, versioniert; Version + Dateiliste schreibt **`node tools/build-pwa.js`** – nach jeder App-Änderung ausführen, macht `Veröffentlichen.bat` automatisch), `js/pwa.js` (registriert den SW nur auf https, lokal nur mit `?pwa=1`), Icons `assets/icons/` (`python tools/make-icons.py`), iOS-Meta-Tags in `index.html`, `.nojekyll`, `.gitignore`, lokales Git-Repo (Branch `main`, 1 Commit, **Autor-Adresse anonym** `timo@users.noreply.github.com`, weil die globale Git-Mail eine Uni-Adresse ist). Videos (.mp4) gehen bewusst am SW vorbei (Safari braucht Range-Requests) → offline Standbild. Getestet: SW installiert, 43 Dateien im Cache, App startet bei **gestopptem Server** (`tools/pwa-1.json` dann Server stoppen, dann `tools/pwa-2.json`, jeweils mit `--keep-profile`). **Offen / beim Nutzer:** GitHub-Repo anlegen (Public), `git remote add origin …`, `git push -u origin main`, Pages aktivieren (Anleitung in README, Abschnitt „Aufs iPhone“). Kein `gh`-CLI installiert. iOS-Hinweise: Lernstand der Home-Bildschirm-App ist von Safari getrennt (Export/Import), Spracherkennung evtl. nicht verfügbar (nicht auf echtem iPhone getestet).
 
 **Ideen für später:** Satz-Kurs erweitern (derzeit 40 Themen/400 Sätze), Lernpfad mit 50 Einheiten pro Stufe ggf. einklappbar machen, Inhalte muttersprachlich gegenlesen lassen.
@@ -80,7 +90,11 @@ README.md               Nutzer-Doku (Deutsch)
 .claude/launch.json     Dev-Server-Konfiguration
 css/styles.css          Grund-Design: Tokens (hell/dunkel), Layout, Buttons, Session, Spiele, Onboarding
 css/extra.css           Erweiterung: Sol-Bühne & Sprechblase, Stufen, Ziel-Assistent, Satz-Kurs, neue Spiele
-css/verbs.css           Verben, Zeiten & Fragen, 6er-Bottom-Nav
+css/verbs.css          Verben, Zeiten & Fragen
+css/talk.css           Gespräche (Liste + Chat)
+css/podcast.css        Podcast
+css/recs.css           Empfehlungen, Bildschirm „Lernen“
+css/mobile.css         Handy-Feinschliff (zuletzt laden!)
 assets/sol/             Coach Sol (Higgsfield): wave/celebrate/think/encourage/teach/cool.webp (512², transparent),
                         sol-wave/-celebrate/-teach.mp4 (720², Loop, Hintergrund #FDE1C7), poster-*.webp, favicon.png, icon-192.png
 js/vocab.js             A1 Einheiten 1–25     (500 Wörter)  window.WSK_UNITS_RAW = [...]
@@ -104,6 +118,9 @@ js/drills.js            Übungen & Sessions: Verben, Zeiten, Fragen, Verb+Infini
 js/games.js             Spielhalle: 8 Spiele
 js/screens.js           Ansichten: home, sents, games, words, guide, stats, settings + Ziel-Assistent, Einheit-/Wort-/Themen-Modals, Onboarding
 js/screens-verbs.js     Ansichten verbs, tenses (+ Verb-/Training-/Thema-Modals, Start-Karten)
+js/talk-a1/a2/b.js      25 Gesprächs-Drehbücher    js/talk-engine.js  Antwort-Erkennung    js/talk.js  Gespräch-UI
+js/podcast-build.js     Folgen zusammenstellen     js/podcast.js      Player + Bildschirm
+js/recs.js              Empfehlungen (Startseite)  js/screens-learn.js  Bildschirm „Lernen“
 js/app.js               Router (#/route), Shell (Sidebar, Topbar, Bottom-Nav), Theme, Topbar-Chips
 tools/check-data.js     Datenvalidierung
 tools/cdp.mjs           Headless-Edge-Testtreiber
@@ -114,6 +131,9 @@ tools/pwa-1.json / pwa-2.json   Offline-Test (Service Worker), siehe oben
 tools/build-pwa.js      sw.js aktualisieren (Version, Dateiliste)
 tools/make-icons.py     App-Icons erzeugen
 tools/conj-test.js      Test der Konjugations-Engine
+tools/talk-test.js      Test Gespräche (Drehbücher + Erkennung)     tools/podcast-test.js  Test Podcast-Folgen
+tools/talk.json / podcast.json / podcast2.json / recs.json   UI-Tests Gespräch, Podcast, Empfehlungen
+tools/gen-mobile.js     erzeugt tools/mobile.json (Handy-Überstand-Test, 5 Breiten)   tools/shots-mobile.json  Handy-Screenshots
 tools/migrate.json      Test Spielstand-Migration (dataV 1 → 2), Presets, Guía, Home
 ```
 
@@ -204,6 +224,7 @@ Häufigkeitswortschatz; Testing-Effekt (Roediger & Karpicke 2006); Spacing (Kim 
 2. **25.09.:** Ausbau: Stufen A1–B2 (2.000 Wörter), Satz-Kurs (400 Sätze, 7 Satz-Übungstypen, Wort-Diff), 4 neue Spiele (Tippen/Sprechen), Ziel-Assistent nach Zielerreichung, Coach Sol mit Higgsfield (Posen + Videos, Sprechblase), neuer Nav-Tab „Sätze“, Profil über Topbar-XP-Chip. Alles getestet, keine Fehler.
 3. **25.09.:** Nutzer-Frage „reichen 500 Wörter pro Stufe?“ → Nein (siehe §2). Beauftragt: Aufgabe A + B. Werkzeuge nach `tools/` verschoben, dieses HANDOFF erstellt.
 5. **30.09.:** Bereich „Verben“ und „Zeiten & Fragen“ gebaut (siehe §2). Alle Tests grün (check-data, conj-test, smoke, quiet, migrate, drills).
+6. **01.10.:** Gespräch-Modus (25 Drehbücher, ohne KI), Podcast-Modus, Empfehlungen auf der Startseite, neue Navigation (5 Reiter + „Lernen“), komplette Handy-Überarbeitung (kein Seitwärts-Scrollen mehr, 265 Prüfungen grün). Nicht committet.
 4. **25.09. (abends):** Aufgabe A + B umgesetzt (4.000 Wörter, 200 Einheiten, ehrliche Texte, Migration) + Nutzerwunsch „Kann gerade nicht hören/sprechen“. Alle Tests grün (check-data, smoke, quiet, migrate).
 
 ## 11. Bekannte Grenzen / Ideen

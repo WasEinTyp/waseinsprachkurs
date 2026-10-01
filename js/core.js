@@ -174,13 +174,22 @@
     sfx: true,
     theme: 'auto',
     focusUnit: -1,         // -1 = der Reihe nach
+    talkIn: 'type',        // Gespräche: Eingabe 'speak' | 'type' | 'choose'
+    talkHear: 'show',      // Gegenüber: 'show' (Text + Ton) | 'hide' (nur Ton)
+    talkTrans: true,       // deutsche Übersetzung im Gespräch
+    podMins: 10,           // Podcast: Länge des Tages-Podcasts
+    podMode: 'quiz',       // 'quiz' (mit Denkpausen) | 'listen' (nur anhören)
+    podRate: 1,            // Sprechtempo-Faktor im Podcast
+    podPause: 1,           // Länge der Denkpausen (Faktor)
+    podText: true,         // Text im Player zeigen
+    podTrans: true,        // Übersetzung im Player zeigen
   };
 
   function fresh() {
     return {
       v: 1, dataV: 2, created: D.today(), onboarded: false,
       settings: { ...DEFAULT_SETTINGS },
-      words: {}, sents: {}, drills: {}, days: {}, xp: 0,
+      words: {}, sents: {}, drills: {}, talks: {}, pod: { eps: 0, secs: 0, last: null }, recs: {}, lastBackup: null, days: {}, xp: 0,
       streak: { count: 0, best: 0, last: null },
       ach: {}, hs: {}, totals: { ok: 0, bad: 0, secs: 0 }, goals: [],
     };
@@ -195,6 +204,10 @@
     d.sents = d.sents || {};
     d.goals = d.goals || [];
     d.drills = d.drills || {};   // Verben, Zeiten & Fragen
+    d.talks = d.talks || {};     // Gespräche: { id: { runs, best (Sterne), pct, last } }
+    d.pod = d.pod || { eps: 0, secs: 0, last: null }; // Podcast: Folgen & Hörzeit
+    d.recs = d.recs || {};       // Empfehlungen auf der Startseite: { id: { tried, snooze } }
+    if (d.lastBackup === undefined) d.lastBackup = null;
     if ((d.dataV || 1) < 2) {
       const f = d.settings.focusUnit;
       const u = f >= 0 ? WSK.units.find((x) => x.rawIdx === f) : null;
@@ -548,6 +561,10 @@
     { id: 'vb10', icon: '🏃', t: 'Conjugador', d: '10 Verb-Formen gelernt' },
     { id: 'vb50', icon: '⚡', t: 'Maestro verbal', d: '50 Verb-Formen gelernt' },
     { id: 'tq25', icon: '⏳', t: 'Preguntón', d: '25 Zeit-Sätze, Fragen oder Verb+Infinitiv-Sätze gelernt' },
+    { id: 'talk1', icon: '🗣️', t: 'Primera charla', d: 'Erstes Gespräch abgeschlossen' },
+    { id: 'talk10', icon: '🎭', t: 'Parlanchín', d: '10 Gespräche abgeschlossen' },
+    { id: 'pod1', icon: '📻', t: 'Primer podcast', d: 'Erste Podcast-Folge gehört' },
+    { id: 'pod60', icon: '🎧', t: 'Radioyente', d: '60 Minuten Podcast gehört' },
   ];
 
   /* Prüft Bedingungen und gibt neu freigeschaltete Erfolge zurück */
@@ -587,6 +604,10 @@
       if (vl >= 10) give('vb10'); if (vl >= 50) give('vb50'); if (ol >= 25) give('tq25');
     }
     if (ctx.build >= 8) give('build8');
+    const talkRuns = Object.values(WSK.state.talks || {}).reduce((n, x) => n + (x.runs || 0), 0);
+    if (talkRuns >= 1) give('talk1'); if (talkRuns >= 10) give('talk10');
+    const pod = WSK.state.pod || {};
+    if ((pod.eps || 0) >= 1) give('pod1'); if ((pod.secs || 0) >= 3600) give('pod60');
     return got.filter(Boolean);
   };
 })();

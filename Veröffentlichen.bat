@@ -1,46 +1,56 @@
 @echo off
-chcp 65001 >nul
-title ¡Qué Curso! – veröffentlichen
+setlocal
+title Que Curso - veroeffentlichen
 cd /d "%~dp0"
 
 echo.
-echo  Bereitet die App für das Handy vor und lädt sie zu GitHub hoch.
-echo  (Voraussetzung: einmalig eingerichtet laut Anleitung in README.md, Abschnitt "Aufs iPhone".)
+echo  Bereitet die App fuers Handy vor und laedt sie zu GitHub hoch.
+echo  Voraussetzung: Node.js und Git sind installiert und GitHub ist verbunden.
 echo.
 
 where node >nul 2>nul
-if errorlevel 1 (
-  echo Node.js wurde nicht gefunden. Installiere es von https://nodejs.org und starte die Datei nochmal.
-  pause
-  exit /b 1
-)
+if errorlevel 1 goto nonode
 where git >nul 2>nul
-if errorlevel 1 (
-  echo Git wurde nicht gefunden. Installiere es von https://git-scm.com und starte die Datei nochmal.
-  pause
-  exit /b 1
-)
+if errorlevel 1 goto nogit
 
 echo [1/3] Offline-Dateiliste und Version aktualisieren ...
-node tools\build-pwa.js
-if errorlevel 1 ( echo Fehler beim Aktualisieren. & pause & exit /b 1 )
+call node tools\build-pwa.js
+if errorlevel 1 goto fail
 
-echo [2/3] Änderungen sichern ...
-git add -A
-git commit -m "Update %DATE% %TIME%" >nul 2>nul
-if errorlevel 1 echo      (keine neuen Änderungen)
+echo [2/3] Aenderungen sichern ...
+call git add -A
+call git commit -m "Update %DATE% %TIME%" >nul 2>nul
+if errorlevel 1 echo      keine neuen Aenderungen
 
 echo [3/3] Zu GitHub hochladen ...
-git push
-if errorlevel 1 (
-  echo.
-  echo Hochladen hat nicht geklappt. Ist das Repository verbunden ^(git remote -v^) und bist du bei GitHub angemeldet?
-  pause
-  exit /b 1
-)
+call git push -u origin main
+if errorlevel 1 goto pushfail
 
 echo.
 echo  Fertig! In etwa einer Minute ist die neue Version online.
-echo  Auf dem iPhone: App öffnen, schließen und nochmal öffnen – dann ist das Update da.
+echo  Auf dem iPhone: App oeffnen, komplett schliessen und nochmal oeffnen - dann ist das Update da.
 echo.
 pause
+exit /b 0
+
+:nonode
+echo Node.js wurde nicht gefunden. Installiere es von https://nodejs.org und starte die Datei nochmal.
+pause
+exit /b 1
+
+:nogit
+echo Git wurde nicht gefunden. Installiere es von https://git-scm.com und starte die Datei nochmal.
+pause
+exit /b 1
+
+:fail
+echo Fehler beim Aktualisieren der Offline-Version.
+pause
+exit /b 1
+
+:pushfail
+echo.
+echo Hochladen hat nicht geklappt. Ist das Repository verbunden? Pruefe mit: git remote -v
+echo Und bist du bei GitHub angemeldet?
+pause
+exit /b 1

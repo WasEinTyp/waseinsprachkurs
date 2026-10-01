@@ -4,15 +4,20 @@
   const WSK = window.WSK, UI = WSK.ui;
   const esc = WSK.text.esc;
 
+  /* bottom: erscheint in der unteren Leiste (Handy) · side === false: nicht in der Seitenleiste (Desktop).
+   * Unten gibt es nur 5 Einträge, damit alles auf ein schmales Handy passt – „Lernen“ fasst die vier Lernbereiche zusammen. */
   const NAV = [
-    { id: 'home', label: 'Heute', icon: 'home' },
-    { id: 'verbs', label: 'Verben', icon: 'verb' },
-    { id: 'tenses', label: 'Zeiten & Fragen', short: 'Zeiten', icon: 'clock' },
-    { id: 'sents', label: 'Sätze', icon: 'chat' },
+    { id: 'home', label: 'Heute', icon: 'home', bottom: true },
+    { id: 'learn', label: 'Lernen', icon: 'book', bottom: true, side: false, group: ['learn', 'words', 'sents', 'verbs', 'tenses'] },
     { id: 'words', label: 'Wörter', icon: 'book' },
-    { id: 'games', label: 'Spiele', icon: 'game' },
-    { id: 'guide', label: 'Guía', icon: 'bulb', sideOnly: true },
-    { id: 'stats', label: 'Profil', icon: 'chart', sideOnly: true },
+    { id: 'sents', label: 'Sätze', icon: 'chat' },
+    { id: 'verbs', label: 'Verben', icon: 'verb' },
+    { id: 'tenses', label: 'Zeiten & Fragen', icon: 'clock' },
+    { id: 'talk', label: 'Gespräch', icon: 'talk', bottom: true },
+    { id: 'podcast', label: 'Podcast', icon: 'headphones', bottom: true },
+    { id: 'games', label: 'Spiele', icon: 'game', bottom: true },
+    { id: 'guide', label: 'Guía', icon: 'bulb' },
+    { id: 'stats', label: 'Profil', icon: 'chart' },
   ];
   let current = null;
 
@@ -33,7 +38,7 @@
       current = r;
       view.className = 'view v-' + r;
       WSK.screens[r](view);
-      document.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('on', a.dataset.nav === r));
+      document.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('on', (a.dataset.group || a.dataset.nav).split(' ').includes(r)));
       app.refreshTop();
       if (changed) window.scrollTo({ top: 0 });
       document.title = r === 'home' ? '¡Qué Curso! – Spanisch lernen' : `${(NAV.find((n) => n.id === r) || { label: 'Menü' }).label} · ¡Qué Curso!`;
@@ -70,11 +75,11 @@
   });
 
   function shell() {
-    const item = (n, bottom) => `<a href="#/${n.id}" data-nav="${n.id}" class="nav-a">${UI.icon(n.icon)}<span>${bottom && n.short ? n.short : n.label}</span></a>`;
+    const item = (n) => `<a href="#/${n.id}" data-nav="${n.id}" ${n.group ? `data-group="${n.group.join(' ')}"` : ''} class="nav-a">${UI.icon(n.icon)}<span>${n.label}</span></a>`;
     document.getElementById('app').innerHTML = `
       <aside class="sidebar">
         <a href="#/home" class="brand">${UI.mascot('happy', 52)}<div><b>¡Qué Curso!</b><span>WasEinSpanischKurs</span></div></a>
-        <nav class="side-nav">${NAV.map((n) => item(n)).join('')}<a href="#/settings" data-nav="settings" class="nav-a">${UI.icon('gear')}<span>Menü</span></a></nav>
+        <nav class="side-nav">${NAV.filter((n) => n.side !== false).map(item).join('')}<a href="#/settings" data-nav="settings" class="nav-a">${UI.icon('gear')}<span>Menü</span></a></nav>
         <div class="side-goal"></div>
       </aside>
       <div class="main">
@@ -84,11 +89,25 @@
         </header>
         <main id="view" class="view"></main>
       </div>
-      <nav class="bottom-nav">${NAV.filter((n) => !n.sideOnly).map((n) => item(n, true)).join('')}</nav>`;
+      <nav class="bottom-nav">${NAV.filter((n) => n.bottom).map(item).join('')}</nav>`;
+  }
+
+  /* Handy: Wenn die Tastatur aufgeht, schrumpft auf dem iPhone nur der sichtbare Bereich. Wir geben ihn an die Vollbild-Ansichten
+   * weiter (CSS-Variablen --vvh / --vvt), damit das Eingabefeld nie unter der Tastatur verschwindet. */
+  function trackViewport() {
+    const vv = window.visualViewport; if (!vv) return;
+    const root = document.documentElement;
+    const upd = () => {
+      root.classList.toggle('kb-open', window.innerHeight - vv.height > 120);
+      root.style.setProperty('--vvh', vv.height + 'px');
+      root.style.setProperty('--vvt', vv.offsetTop + 'px');
+    };
+    vv.addEventListener('resize', upd); vv.addEventListener('scroll', upd); upd();
   }
 
   function init() {
     app.applyTheme();
+    trackViewport();
     shell();
     window.addEventListener('hashchange', app.render);
     app.render();

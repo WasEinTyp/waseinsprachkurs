@@ -1,0 +1,124 @@
+/* ¡Qué Curso! – Handy-Feinschliff (wird zuletzt geladen).
+ * Ziel: Alles bleibt innerhalb des Bildschirmrands – ohne seitliches Scrollen, auch bei 320 px Breite (iPhone SE) –,
+ * Eingabefelder zoomen auf dem iPhone nicht, die Tastatur verdeckt nichts, Notch und Home-Balken werden respektiert.
+ * Geprüft mit tools/gen-mobile.js (fünf Handy-Breiten × alle Bildschirme). */
+
+html { overflow-x: clip; }
+body { overflow-x: clip; overflow-wrap: break-word; -webkit-tap-highlight-color: transparent; }
+.main, .view, .card, .modal, .settings > * { min-width: 0; }
+button, a, input, select, summary, label { touch-action: manipulation; }
+img, video, canvas { max-width: 100%; }
+
+/* Seiten-Ränder inkl. Notch im Querformat */
+.view { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+@media (min-width: 960px) { .view { padding-left: 36px; padding-right: 36px; } }
+
+/* Tastatur offen: untere Leiste weg, Vollbild-Ansichten nutzen nur den sichtbaren Bereich (Variablen setzt app.js) */
+html.kb-open .bottom-nav { display: none; }
+html.kb-open .session, html.kb-open .game-ov, html.kb-open .onboard { inset: auto; left: 0; right: 0; top: var(--vvt, 0px); height: var(--vvh, 100%); }
+
+/* Mobil-Browser: 100vh ist höher als der sichtbare Bereich → dvh, wo vorhanden */
+@supports (height: 100dvh) {
+  #app { min-height: 100dvh; }
+  .modal { max-height: calc(100dvh - 32px); }
+  @media (max-width: 560px) { .modal { max-height: 90dvh; } }
+  .s-sheet { max-height: 72dvh; }
+}
+
+/* ---------- Obere Leiste: passt auch auf 320 px ---------- */
+@media (max-width: 600px) {
+  .topbar { gap: 8px; padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); }
+  .brand-mini b { display: none; }
+  .brand-mini .sol-img, .brand-mini .mascot { width: 36px; height: 36px; }
+  .top-right { gap: 6px; min-width: 0; }
+  .chip-top { padding: 5px 9px; gap: 3px; font-size: 13.5px; }
+  .xp-l { display: none; }
+  .top-right .icon-btn { width: 36px; height: 36px; border-radius: 12px; }
+  .top-right .icon-btn .ic { width: 20px; height: 20px; }
+}
+@media (min-width: 380px) and (max-width: 600px) { .brand-mini b { display: inline; font-size: 15px; } }
+
+/* ---------- Untere Leiste: 5 Einträge ---------- */
+.bottom-nav { grid-template-columns: repeat(5, 1fr); padding-left: max(6px, env(safe-area-inset-left)); padding-right: max(6px, env(safe-area-inset-right)); }
+.bottom-nav .nav-a { min-width: 0; font-size: 11px; }
+.bottom-nav .nav-a span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Reihen mit vielen Chips: umbrechen statt seitlich scrollen ---------- */
+.lv-tabs, .filters { flex-wrap: wrap; overflow: visible; gap: 6px; }
+.lv-tab { flex: 1 1 calc(50% - 6px); justify-content: center; flex-wrap: wrap; text-align: center; padding-inline: 8px; }
+@media (min-width: 640px) { .lv-tab { flex: 1 1 0; } }
+.fchip { flex: 0 1 auto; }
+.tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; gap: 6px; padding-inline: 0; }
+.tab { text-align: center; padding-inline: 8px; }
+@media (min-width: 720px) { .tabs { display: flex; flex-wrap: wrap; } .tab { flex: 0 1 auto; } }
+
+/* Lernpfad: die Wellenbewegung bleibt im Rand */
+.path { padding-inline: calc(var(--k) * 68px); }
+.pn { width: min(340px, 100%); }
+
+/* Tabellen schrumpfen statt zu scrollen */
+.cj-multi-wrap, .g-table-wrap { overflow-x: visible; }
+.cj-multi, .g-table { min-width: 0; table-layout: auto; }
+@media (max-width: 560px) {
+  .cj-multi, .g-table { font-size: 13.5px; }
+  .cj-multi th, .cj-multi td, .g-table th, .g-table td { padding: 6px 5px; }
+  .cj-multi td button { font-size: 14px; overflow-wrap: anywhere; }
+}
+
+/* Raster mit festen Mindestbreiten dürfen nie breiter als der Bildschirm werden */
+.g-cards { grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); }
+.g-ff { grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); }
+.game-grid { grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); }
+.topic-grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); }
+.cmp-grid { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+.qw-grid { grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); }
+.ach-grid { grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); }
+
+/* Start-Karten: auf dem Handy 2 × 2 */
+.area-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.area-card { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; min-width: 0; }
+.area-card .ar-ic { width: 46px; height: 46px; font-size: 26px; }
+.area-card > div { min-width: 0; }
+.area-card b { font-size: 17px; }
+.area-card span:not(.ar-ic) { font-size: 13px; line-height: 1.35; display: block; }
+@media (min-width: 900px) { .area-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } .area-card { flex-direction: row; align-items: center; } }
+
+/* Einstellungen */
+.settings select { max-width: 100%; }
+.set-row { flex-wrap: wrap; }
+.set-row > * { min-width: 0; }
+.set-row > div:first-child { flex: 1 1 200px; }
+.seg button { white-space: normal; min-width: 0; }
+.preset-row { min-width: 0; }
+.range-row { min-width: 0; }
+
+/* Feldgrößen < 16 px lässt iOS beim Antippen heranzoomen */
+.settings select, .settings input[type=date], .settings input[type=text], .ob-goal input[type=date], .gm-custom input, select.sel { font-size: 16px; }
+
+/* Lange Wörter in Karten und Blasen umbrechen */
+.bubble-text, .sr-main, .wt, .tc-main, .pn-label, .lv-mid, .um-head > div, .sh-answer, .sh-sent, .intro-ex, .wm-ex { overflow-wrap: anywhere; }
+.wt span { white-space: normal; }
+
+/* Sehr schmale Handys (320 px) */
+@media (max-width: 360px) {
+  .view { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  .hero { padding: 20px 16px; border-radius: 26px; }
+  .page-head h1 { font-size: 28px; }
+  .btn.huge { padding: 14px 16px; font-size: 17px; }
+  .modal { padding: 24px 16px 18px; }
+  .kpi span { font-size: 11px; letter-spacing: 0; }
+}
+
+/* Spiele: Kopfzeile bricht um, Raster bleiben im Rand */
+.onboard { overflow-x: hidden; }
+.g-top { flex-wrap: wrap; gap: 8px 10px; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.g-title { min-width: 0; flex: 1 1 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; }
+.g-hud { flex-wrap: wrap; justify-content: flex-end; margin-left: auto; min-width: 0; gap: 6px; }
+.hud-pill { padding: 5px 10px; font-size: 14px; }
+.g-stage { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.pj-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pj { min-width: 0; padding: 8px; font-size: 15px; overflow-wrap: anywhere; }
+.pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pcard { min-width: 0; overflow-wrap: anywhere; }
+.blitz-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.blitz-btns .btn { min-width: 0; padding-inline: 8px; }

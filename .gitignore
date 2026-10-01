@@ -2,3 +2,4 @@ tools/shots/
 .claude/
 node_modules/
 *.log
+tools/mobile.json

@@ -1,0 +1,6 @@
+[
+ { "size": [390, 844, false], "dark": false, "nav": "http://localhost:5173/?today=2026-10-01", "wait": 2200 },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const c=(s)=>{const e=document.querySelector(s); if(e) e.click();}; c('.onboard [data-next]'); await w(200); c('[data-save-name]'); await w(200); c('.onboard [data-next]'); await w(200); c('.onboard [data-next]'); await w(300); c('[data-finish]'); await w(700); return 'ok'; })()" },
+ { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); try { WSK.podcast.fastStart=true; WSK.podcast.playTalk('cafe'); await w(400); const b=document.querySelector('.pod-mode[data-m=\"role\"]'); b.click(); await w(1500); const t=document.getElementById('pod')? document.querySelector('.pod-top .tk-title b').textContent : 'kein Player'; const fin=!!document.querySelector('.pod-end'); return 'Hörspiel: ' + t + ' · fertig ' + fin + ' · Ach ' + Object.keys(WSK.state.ach).join(','); } catch(e) { return 'ERR ' + e.message; } })()" },
+ { "shot": "pod-04-role-end.png" }
+]

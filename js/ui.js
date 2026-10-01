@@ -34,6 +34,15 @@
       verb: '<path d="M13.5 2.5L5 13.5h6l-1.5 8 9-11.5h-6.3l1.3-7.5z" fill="currentColor"/>',
       clock: '<circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M12 7v5.2l3.6 2.1" stroke="var(--nav-cut, #fff)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
       search: '<circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
+      talk: '<path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H14a2.5 2.5 0 0 1 2.5 2.5V10a2.5 2.5 0 0 1-2.5 2.5H9l-3.2 2.7c-.5.4-1.1 0-1.1-.6v-2.1A2.5 2.5 0 0 1 3 10V5.5z" fill="currentColor"/><path d="M18 8.5h.5A2.5 2.5 0 0 1 21 11v4.5a2.5 2.5 0 0 1-1.7 2.4v1.8c0 .6-.6.9-1.1.5L15.5 18H11a2.5 2.5 0 0 1-2.2-1.3h4.9a3.8 3.8 0 0 0 3.8-3.8V8.5z" fill="currentColor" opacity=".55"/>',
+      headphones: '<path d="M4 15v-3a8 8 0 0 1 16 0v3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/><rect x="3" y="13.5" width="4.6" height="7.5" rx="2.2" fill="currentColor"/><rect x="16.4" y="13.5" width="4.6" height="7.5" rx="2.2" fill="currentColor"/>',
+      play: '<path d="M8 5.6v12.8a1 1 0 0 0 1.5.9l10-6.4a1 1 0 0 0 0-1.8l-10-6.4A1 1 0 0 0 8 5.6z" fill="currentColor"/>',
+      pause: '<rect x="6" y="5" width="4.3" height="14" rx="1.5" fill="currentColor"/><rect x="13.7" y="5" width="4.3" height="14" rx="1.5" fill="currentColor"/>',
+      next: '<path d="M5.5 6v12a1 1 0 0 0 1.5.9l8-6a1 1 0 0 0 0-1.8l-8-6A1 1 0 0 0 5.5 6z" fill="currentColor"/><rect x="17" y="5" width="2.8" height="14" rx="1.3" fill="currentColor"/>',
+      prev: '<g transform="matrix(-1 0 0 1 24 0)"><path d="M5.5 6v12a1 1 0 0 0 1.5.9l8-6a1 1 0 0 0 0-1.8l-8-6A1 1 0 0 0 5.5 6z" fill="currentColor"/><rect x="17" y="5" width="2.8" height="14" rx="1.3" fill="currentColor"/></g>',
+      replay: '<path d="M5 12a7 7 0 1 0 2.1-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M4 4.2v4.9h4.9" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+      moon: '<path d="M20 14.6A8.2 8.2 0 0 1 9.4 4 8.2 8.2 0 1 0 20 14.6z" fill="currentColor"/>',
+      sparkle: '<path d="M11 2.5l1.9 5.6 5.6 1.9-5.6 1.9L11 17.5l-1.9-5.6L3.5 10l5.6-1.9L11 2.5z" fill="currentColor"/><path d="M19 14.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z" fill="currentColor"/>',
     }[name] || '';
     return `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
   };
@@ -229,7 +238,7 @@
     if (!b) return;
     e.preventDefault();
     b.classList.add('speaking');
-    WSK.tts.speak(b.dataset.say, { slow: b.hasAttribute('data-slow') }).then(() => b.classList.remove('speaking'));
+    WSK.tts.speak(b.dataset.say, { slow: b.hasAttribute('data-slow'), alt: b.hasAttribute('data-alt') }).then(() => b.classList.remove('speaking'));
   });
 
   UI.greeting = function () {

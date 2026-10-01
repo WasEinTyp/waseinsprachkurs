@@ -31,6 +31,7 @@
     WSK.save();
     if (on) { if (k === 'listen') WSK.tts.stop(); else WSK.stt.stop(); }
     UI.toast(QUIET_TXT[k][on ? 'toastOn' : 'toastOff'], { icon: QUIET_TXT[k].icon[on ? 0 : 1] });
+    document.dispatchEvent(new CustomEvent('wsk:quiet', { detail: { kind: k, on } })); // Gespräche & Podcast reagieren darauf
     if (cur && !cur.open) render(); // aktuelle Übung in der passenden Variante neu aufbauen
   }
   function addQuiet(api, k, where) {

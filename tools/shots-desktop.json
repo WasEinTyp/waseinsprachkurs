@@ -1,0 +1,9 @@
+[
+ { "size": [1280, 860, false], "dark": false, "nav": "http://localhost:5173/?today=2026-10-01", "wait": 2200 },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms));const c=(s)=>{const e=document.querySelector(s);if(e)e.click();}; c('.onboard [data-next]');await w(200);c('[data-save-name]');await w(200);c('.onboard [data-next]');await w(200);c('.onboard [data-next]');await w(300);c('[data-finish]');await w(700); WSK.words.slice(0,70).forEach((x,i)=>{WSK.srs.introduce(x.id,false); WSK.state.words[x.id].lvl=2;}); WSK.sents.slice(0,25).forEach(x=>WSK.ssrs.introduce(x.id,false)); WSK.save(true); location.hash='#/home'; await w(300); WSK.app.refresh(); await w(500); return 'ok'; })()" },
+ { "shot": "d-01-home.png" },
+ { "eval": "location.hash='#/talk'; 'talk'", "sleep": 700 },
+ { "shot": "d-02-talk.png" },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms)); WSK.talk.open('cafe'); await w(300); WSK.talk.demo(true); document.querySelector('#talk [data-go]').click(); await w(900); return 'chat'; })()" },
+ { "shot": "d-03-chat.png" }
+]

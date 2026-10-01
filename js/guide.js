@@ -29,7 +29,7 @@ window.WSK_GUIDE = [
     <li><strong>Erst wiederholen:</strong> Fällige Wörter kommen immer zuerst. Die Wiederholungen dauern nur ein paar Minuten und retten, was du schon gelernt hast.</li>
     <li><strong>Dann Neues in kleinen Häppchen:</strong> Lektionen mit 5 neuen Wörtern. Verteile sie lieber auf 2–3 kurze Einheiten am Tag (z. B. morgens, mittags, abends) als eine lange Sitzung.</li>
     <li><strong>Ein Spiel zum Schluss:</strong> Blitzrunde oder Wortregen – schnelles Abrufen unter Zeitdruck macht die Wörter „flüssig“.</li>
-    <li><strong>Bonus – Hören:</strong> 10 Minuten spanische Videos oder Podcasts für Anfänger (siehe „Weiter geht's“). Plötzlich erkennst du deine Wörter überall.</li>
+    <li><strong>Bonus – Hören &amp; Sprechen:</strong> Den Lern-Podcast hören (z. B. beim Spazieren) oder ein Gespräch üben. Dazu 10 Minuten spanische Videos für Anfänger (siehe „Weiter geht's“). Plötzlich erkennst du deine Wörter überall.</li>
     <li><strong>Schlafen:</strong> Im Schlaf festigt dein Gehirn, was du tagsüber gelernt hast. Lernen am Abend und kurz wiederholen am Morgen ist eine Top-Kombi.</li>
   </ol>
   <div class="g-note">📌 <strong>Wann gilt ein Wort als „gelernt“?</strong> Sobald du es mindestens einmal <em>nach einer Nacht Schlaf</em> richtig abgerufen hast (Stufe 2). Ab Stufe 5 ist es „gemeistert“ und sitzt meist langfristig.</div>
@@ -75,7 +75,7 @@ window.WSK_GUIDE = [
     <li><b>Grammatik in Sätzen:</b> 40 Themen mit 400 Beispielsätzen und kurzen Erklärungen von Sol.</li>
     <li><b>Verben:</b> über 100 der wichtigsten Verben mit Konjugationstabellen in 9 Zeiten, dazu „wollen, können, müssen …“ in echten Sätzen.</li>
     <li><b>Zeiten &amp; Fragen:</b> wann man welche Zeit nimmt, Signalwörter und alle Fragewörter mit Übungen.</li>
-    <li><b>Hören & Sprechen:</b> Diktat, Ohrwurm, Sprech-Duell und das Nachsprechen von Sätzen.</li>
+    <li><b>Hören &amp; Sprechen:</b> Diktat, Ohrwurm, Sprech-Duell und das Nachsprechen von Sätzen – dazu <b>25 Gespräche</b> mit Mikrofon, Tastatur oder Auswahl und ein <b>Podcast</b> aus deinem Lernstoff (siehe „Gespräch &amp; Podcast“).</li>
     <li><b>Ergänze ab A2:</b> echte Gespräche (Tandem, Lehrkraft) und viel verständlichen Input – Serien, Podcasts, Bücher (siehe „Weiter geht's“).</li>
   </ul>
   <div class="g-note">🎯 <strong>Dein Plan:</strong> Erst die 500 Wörter bis zum Zieldatum, danach setzt du im Menü einfach das nächste Etappenziel (1.000 Wörter = A1 komplett). Der Satz-Kurs läuft mit ein paar Sätzen pro Tag nebenher.</div>
@@ -205,6 +205,34 @@ window.WSK_GUIDE = [
   <div class="g-chips">
     <b data-say="actual">actual = aktuell</b><b data-say="simpático">simpático = sympathisch</b><b data-say="triste">triste = traurig (trist)</b><b data-say="sensible">sensible = sensibel</b><b data-say="el banco">el banco = die Bank</b><b data-say="la tarta">la tarta = die Torte</b><b data-say="el kilo">el kilo = das Kilo</b><b data-say="la paella">la paella</b>
   </div>
+  `
+},
+{
+  id: 'reden', icon: '🎙️', title: 'Gespräch & Podcast',
+  lead: 'Hören und Sprechen üben – ohne Partner, ohne KI, auf dem Handy.',
+  html: `
+  <div class="g-cards">
+    <div class="g-card"><div class="g-ic">🗣️</div><h4>Gespräche</h4>
+      <p>25 Alltagssituationen von A1 bis B2: sich vorstellen, im Café bestellen, zum Arzt gehen, ein Gehalt verhandeln … Das Gegenüber spricht (Text + Ton), du antwortest per <b>Mikrofon</b>, <b>Tastatur</b> oder <b>Auswahl</b>. Wer hängt, bekommt Hilfe in drei Stufen: Anfang des Satzes → Wortbausteine → Lösung. Dafür gibt es Sterne.</p></div>
+    <div class="g-card"><div class="g-ic">🎧</div><h4>Podcast</h4>
+      <p>Der Tages-Podcast entsteht aus <em>deinem</em> Lernstand: fällige Wörter, Sätze, Verben und eine Vorschau auf Neues. Im Modus „Abfragen“ wird es nach jeder Frage still – du antwortest laut, dann kommt die Lösung. Dazu gibt es <b>Hörspiele</b> (die Gespräche als Audio, auch zum Mitsprechen und als Rollenspiel), Einheiten zum Anhören und einen <b>Verben-Chor</b>.</p></div>
+    <div class="g-card"><div class="g-ic">🔀</div><h4>Vier Fertigkeiten in einem</h4>
+      <p><b>Hören</b> (Ton des Gegenübers), <b>Lesen</b> (Text), <b>Sprechen</b> (Mikrofon) und <b>Schreiben</b> (Tastatur) – du kannst jederzeit wechseln. Mit „Nur Ton“ liest du nicht mit und trainierst echtes Hörverstehen. „Kann gerade nicht hören / sprechen“ gibt es auch hier (Zahnrad oben).</p></div>
+  </div>
+  <h3>Wie funktioniert das ohne KI?</h3>
+  <p>Jedes Gespräch ist ein <b>Drehbuch</b>. Was das Gegenüber sagt, steht fest. An jeder Stelle, an der du dran bist, kennt die App eine Musterantwort, Varianten und <b>Schlüsselwörter</b>. Deine Antwort zählt als <b>perfekt</b>, wenn sie (fast) passt – Akzente und kleine Tippfehler sind egal –, und als <b>verstanden</b>, wenn die wichtigen Wörter vorkommen. Dann zeigt dir das Gegenüber die übliche Formulierung. Passt nichts, fragt es höflich nach („¿Perdón?“).</p>
+  <ul class="g-list">
+    <li><b>Vorteile:</b> läuft offline, kostet nichts, ist privat, reagiert sofort und die Inhalte sind geprüft.</li>
+    <li><b>Grenzen:</b> Es ist kein freies Gespräch. Die Reaktionen sind vorbereitet, und deine Grammatik wird nur grob geprüft. Eine echte KI könnte frei reagieren und Fehler erklären – bräuchte aber Internet, einen Zugang und einen Server (und das kostet Geld).</li>
+    <li><b>Praktisch:</b> Wiederhole ein Gespräch, bis du es ohne Tipps schaffst. Dann hast du Sätze, die du im Urlaub sofort brauchen kannst.</li>
+  </ul>
+  <h3>Podcast auf dem Handy</h3>
+  <ul class="g-list">
+    <li>Der Podcast wird von deinem Gerät <b>vorgelesen</b> (Sprachausgabe). Es gibt keine Audio-Dateien – deshalb läuft alles offline.</li>
+    <li>Er läuft nur bei <b>eingeschaltetem Bildschirm</b>. Die App hält ihn dafür wach. Beim Sperren oder Verlassen der App stoppt die Sprachausgabe (das liegt am Browser).</li>
+    <li>Tipp: Auf dem iPhone brauchst du eine spanische Stimme (Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen).</li>
+  </ul>
+  <div class="g-note">🚀 <strong>Tipps auf der Startseite:</strong> Ab bestimmten Etappen (z. B. 30 Wörter, 100 Wörter, nach dem 3. Gespräch) schlägt dir die App Dinge vor, die dich schneller machen – mit der Begründung dahinter. Alle Tipps siehst du unter „Alle Tipps“.</div>
   `
 },
 {

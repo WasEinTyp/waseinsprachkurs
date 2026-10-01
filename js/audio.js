@@ -8,9 +8,12 @@
   const TTS = (WSK.tts = {
     supported: !!synth && typeof window.SpeechSynthesisUtterance === 'function',
     voices: [],
+    deVoices: [],
     load() {
       if (!TTS.supported) return;
-      TTS.voices = synth.getVoices().filter((v) => /^es([-_]|$)/i.test(v.lang));
+      const all = synth.getVoices();
+      TTS.voices = all.filter((v) => /^es([-_]|$)/i.test(v.lang));
+      TTS.deVoices = all.filter((v) => /^de([-_]|$)/i.test(v.lang));
       document.dispatchEvent(new CustomEvent('wsk:voices'));
     },
     score(v, variant) {
@@ -30,6 +33,27 @@
       if (set.voice) { const v = TTS.voices.find((x) => x.name === set.voice); if (v) return v; }
       return TTS.voices.slice().sort((a, b) => TTS.score(b, set.variant) - TTS.score(a, set.variant))[0];
     },
+    /* Deutsche Stimme (für Sols Ansagen im Podcast): de-DE bevorzugt, natürliche Stimmen zuerst */
+    deVoice() {
+      if (!TTS.deVoices.length) return null;
+      const sc = (v) => (/^de[-_]DE$/i.test(v.lang) ? 6 : 0) + (/natural|neural|online|premium|enhanced/i.test(v.name) ? 5 : 0) + (/google/i.test(v.name) ? 3 : 0) + (v.localService === false ? 1 : 0);
+      return TTS.deVoices.slice().sort((a, b) => sc(b) - sc(a))[0];
+    },
+    /* Zweite spanische Stimme für Dialoge (nach Möglichkeit das andere Geschlecht); null, wenn es nur eine gibt */
+    gender(v) {
+      if (/pablo|raul|raúl|jorge|diego|juan|carlos|enrique|miguel|alvaro|álvaro|andres|andrés|antonio|pedro|luis|manuel|\bmale\b|hombre/i.test(v.name)) return 'm';
+      if (/helena|laura|sabina|monica|mónica|paulina|esperanza|elena|lucia|lucía|maria|maría|dalia|elvira|abril|camila|lupe|paloma|\bfemale\b|mujer/i.test(v.name)) return 'f';
+      return '';
+    },
+    altVoice() {
+      const main = TTS.voice();
+      if (!main || TTS.voices.length < 2) return null;
+      const set = WSK.state.settings;
+      const rest = TTS.voices.filter((v) => v.name !== main.name).sort((a, b) => TTS.score(b, set.variant) - TTS.score(a, set.variant));
+      const g = TTS.gender(main);
+      return rest.find((v) => g && TTS.gender(v) && TTS.gender(v) !== g) || rest[0] || null;
+    },
+    /* opts: slow (langsam) · lang: 'de' für deutsche Ansagen · alt: zweite Stimme (Dialogpartner) · rate: Tempo-Faktor · pitch */
     speak(text, opts) {
       opts = opts || {};
       if (!TTS.supported || !text) return Promise.resolve();
@@ -37,11 +61,14 @@
         try {
           synth.cancel();
           const u = new SpeechSynthesisUtterance(text);
-          const v = TTS.voice();
+          const de = opts.lang === 'de';
+          const alt = !de && opts.alt ? TTS.altVoice() : null;
+          const v = de ? TTS.deVoice() : alt || TTS.voice();
           if (v) u.voice = v;
-          u.lang = v ? v.lang : WSK.state.settings.variant;
-          u.rate = Math.max(0.4, Math.min(1.5, (WSK.state.settings.rate || 0.9) * (opts.slow ? 0.65 : 1)));
-          u.pitch = 1;
+          u.lang = v ? v.lang : de ? 'de-DE' : WSK.state.settings.variant;
+          const base = de ? 1 : WSK.state.settings.rate || 0.9;
+          u.rate = Math.max(0.4, Math.min(1.6, base * (opts.rate || 1) * (opts.slow ? 0.65 : 1)));
+          u.pitch = opts.pitch || (!de && opts.alt && !alt ? 0.8 : 1); // nur eine Stimme: Partner klingt tiefer
           let done = false;
           const fin = () => { if (!done) { done = true; resolve(); } };
           u.onend = fin; u.onerror = fin;
@@ -97,11 +124,28 @@
           [392, 523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * 0.07, 0.25, 'square', 0.06));
           break;
         case 'boom': tone(180, 0, 0.3, 'sawtooth', 0.08, 50); break;
+        case 'cue': tone(880, 0, 0.09, 'sine', 0.1); break;                       // Podcast: jetzt bist du dran
+        case 'cue2': tone(660, 0, 0.08, 'sine', 0.09); tone(990, 0.09, 0.12, 'sine', 0.09); break; // Podcast: Antwort kommt
       }
     },
     unlock() { ac(); },
   });
   ['pointerdown', 'keydown'].forEach((ev) => window.addEventListener(ev, SFX.unlock, { once: true, capture: true }));
+
+  /* ---------------- Bildschirm wach halten (Podcast läuft nur bei eingeschaltetem Bildschirm) ---------------- */
+  WSK.wake = {
+    lock: null,
+    supported: !!(navigator.wakeLock && navigator.wakeLock.request),
+    async on() {
+      if (!WSK.wake.supported || WSK.wake.lock) return false;
+      try {
+        WSK.wake.lock = await navigator.wakeLock.request('screen');
+        WSK.wake.lock.addEventListener('release', () => { WSK.wake.lock = null; });
+        return true;
+      } catch (e) { WSK.wake.lock = null; return false; }
+    },
+    off() { try { if (WSK.wake.lock) WSK.wake.lock.release(); } catch (e) { /* egal */ } WSK.wake.lock = null; },
+  };
 
   /* ---------------- Spracherkennung ---------------- */
   const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;

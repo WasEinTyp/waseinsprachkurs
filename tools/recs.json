@@ -1,0 +1,15 @@
+[
+ { "size": [390, 844, false], "dark": false, "nav": "http://localhost:5173/?today=2026-10-01", "wait": 2200 },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms));const c=(s)=>{const e=document.querySelector(s);if(e)e.click();}; c('.onboard [data-next]');await w(200);c('[data-save-name]');await w(200);c('.onboard [data-next]');await w(200);c('.onboard [data-next]');await w(300);c('[data-finish]');await w(700); const t=()=>{const r=document.querySelector('.recs'); return r? r.innerText.replace(/\\s+/g,' ').slice(0,260) : '(keine Empfehlungen)';}; location.hash='#/home'; await w(500); const a='NEU: '+t(); WSK.words.slice(0,22).forEach(x=>WSK.srs.introduce(x.id,false)); WSK.srs.ids().forEach(id=>WSK.state.words[id].lvl=2); WSK.app.refresh(); await w(400); const b='22 Wörter: '+t(); WSK.words.slice(0,70).forEach(x=>{ if(!WSK.state.words[x.id]) WSK.srs.introduce(x.id,false); WSK.state.words[x.id].lvl=2; }); WSK.app.refresh(); await w(400); const c2='70 Wörter: '+t(); return a+' ### '+b+' ### '+c2; })()" },
+ { "eval": "document.querySelector('.recs').scrollIntoView(); 'scrolled'", "sleep": 400 },
+ { "shot": "r-01-recs.png" },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('[data-rec-later]').click(); await w(500); const x=document.querySelector('.recs'); return 'nach Später: ' + (x? x.innerText.replace(/\\s+/g,' ').slice(0,120):'-') + ' | recs ' + JSON.stringify(WSK.state.recs); })()" },
+ { "dark": true, "eval": "document.querySelector('.recs').scrollIntoView(); 'dark'", "sleep": 400 },
+ { "shot": "r-02-recs-dark.png" },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('[data-recs-all]').click(); await w(500); return 'alle Tipps: ' + document.querySelectorAll('.rec-row').length + ' Zeilen, offen ' + document.querySelectorAll('.rec-row.open').length + ', gesperrt ' + document.querySelectorAll('.rec-row.locked').length; })()" },
+ { "shot": "r-03-all-dark.png" },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms)); document.querySelector('.modal-x').click(); await w(300); WSK.talk.open('hola'); await w(300); WSK.talk.demo(true); document.querySelector('#talk [data-go]').click(); await w(900); const i=document.querySelector('.tk-in'); i.value='Hola muy bien'; i.closest('form').requestSubmit(); await w(900); return 'dark talk'; })()" },
+ { "shot": "r-04-talk-dark.png" },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms)); WSK.talk.close(); WSK.podcast.fastStart=false; WSK.podDaily(); await w(1500); return 'dark pod'; })()" },
+ { "shot": "r-05-pod-dark.png" }
+]

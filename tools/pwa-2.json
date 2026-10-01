@@ -1,7 +1,26 @@
 [
- { "size": [390, 820, true], "nav": "http://localhost:5173/?pwa=1&today=2026-09-30#/verbs", "wait": 3500 },
- { "eval": "(async()=>{ await new Promise(r=>setTimeout(r,800)); const v = document.querySelectorAll('.verb-chip').length; const css = getComputedStyle(document.body).backgroundColor; return 'OFFLINE geladen: Verb-Chips ' + v + ' | WSK ' + (typeof WSK) + ' | Body-Farbe ' + css + ' | Verben-Überschrift: ' + (document.querySelector('h1')||{}).textContent; })()" },
- { "shot": "pwa-offline.png" },
- { "eval": "(async()=>{ location.hash = '#/home'; await new Promise(r=>setTimeout(r,900)); const vid = document.querySelector('.sol-stage video'); const img = document.querySelector('.sol-stage img'); return 'Home offline: Sol-Video ' + !!vid + ' / Standbild ' + !!img + ' | Hero: ' + (document.querySelector('.hero h1')||{}).textContent; })()" },
- { "shot": "pwa-offline-home.png" }
+ {
+  "size": [
+   390,
+   820,
+   true
+  ],
+  "nav": "http://localhost:5173/?pwa=1&today=2026-09-30#/verbs",
+  "wait": 3500
+ },
+ {
+  "eval": "(async()=>{ await new Promise(r=>setTimeout(r,800)); const v = document.querySelectorAll('.verb-chip').length; const css = getComputedStyle(document.body).backgroundColor; return 'OFFLINE geladen: Verb-Chips ' + v + ' | WSK ' + (typeof WSK) + ' | Body-Farbe ' + css + ' | Verben-Überschrift: ' + (document.querySelector('h1')||{}).textContent; })()"
+ },
+ {
+  "shot": "pwa-offline.png"
+ },
+ {
+  "eval": "(async()=>{ location.hash = '#/home'; await new Promise(r=>setTimeout(r,900)); const vid = document.querySelector('.sol-stage video'); const img = document.querySelector('.sol-stage img'); return 'Home offline: Sol-Video ' + !!vid + ' / Standbild ' + !!img + ' | Hero: ' + (document.querySelector('.hero h1')||{}).textContent; })()"
+ },
+ {
+  "shot": "pwa-offline-home.png"
+ },
+ {
+  "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); location.hash='#/talk'; await w(700); const a=document.querySelectorAll('.tk-card').length; location.hash='#/podcast'; await w(700); const b=document.querySelectorAll('.tk-card').length + ' Hörspiele, Daily-Karte ' + !!document.querySelector('.pod-hero'); location.hash='#/learn'; await w(500); return 'OFFLINE Gespräche ' + a + ' | Podcast ' + b + ' | Lernen ' + document.querySelectorAll('.learn-card').length; })()"
+ }
 ]

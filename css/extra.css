@@ -83,7 +83,7 @@
 .gm-opt.on { border-color: var(--lc); background: color-mix(in srgb, var(--lc) 10%, var(--surface)); box-shadow: 0 3px 0 var(--lc); }
 .gm-custom { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .gm-custom label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px; }
-.gm-custom input { font: 600 15px var(--font); padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
+.gm-custom input { font: 600 16px var(--font); padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
 .gm-calc { margin: 12px 0 16px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--sun) 16%, var(--surface)); font-size: 15px; }
 
 /* ---------- Satz-Kurs ---------- */

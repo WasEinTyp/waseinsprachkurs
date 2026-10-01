@@ -1,0 +1,56 @@
+/* ¡Qué Curso! – Podcast (Bildschirm + Player). Handy zuerst. */
+
+/* ---------- Bildschirm ---------- */
+.warn-card { margin: 12px 0; font-size: 14.5px; line-height: 1.5; background: color-mix(in srgb, var(--sun) 14%, var(--surface)); border-color: color-mix(in srgb, var(--sun) 55%, var(--line)); }
+.pod-hero { display: grid; gap: 10px; margin-top: 4px; background: linear-gradient(150deg, color-mix(in srgb, var(--violet) 11%, var(--surface)), var(--surface) 70%); }
+.pod-hero .plan-head h3 { margin: 0; }
+.pod-sub { margin: 0; }
+.pod-pick { display: grid; gap: 4px; }
+.pod-note { margin: 0; text-align: center; }
+.pod-unit .sel { flex: 1 1 200px; min-width: 0; }
+.pod-verbs .seg { margin-top: 8px; }
+.pod-verbs .tense-chips { margin-bottom: 4px; }
+.pod-modes { display: grid; gap: 10px; margin-top: 14px; }
+.pod-mode { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 12px 14px; text-align: left; border-radius: 16px; border: 2px solid var(--line); background: var(--surface); box-shadow: 0 3px 0 var(--line); color: var(--ink); font: inherit; cursor: pointer; }
+.pod-mode:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.pm-ic { flex: none; font-size: 28px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; background: var(--surface-2); }
+.pod-mode > span:last-child { min-width: 0; }
+.pod-mode b { display: block; font: 800 17px var(--font-d); }
+.pod-mode small { display: block; color: var(--muted); font-size: 13.5px; line-height: 1.35; }
+
+/* ---------- Player ---------- */
+.pod { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  background: radial-gradient(900px 480px at 50% -10%, color-mix(in srgb, var(--violet) 22%, transparent), transparent 70%), radial-gradient(700px 400px at 100% 100%, color-mix(in srgb, var(--sun) 18%, transparent), transparent 70%), var(--bg); }
+html.kb-open .pod { inset: auto; left: 0; right: 0; top: var(--vvt, 0px); height: var(--vvh, 100%); }
+.pod-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; padding: 6px max(16px, env(safe-area-inset-left)) 12px; }
+.pod-stage { margin: auto; width: 100%; max-width: 560px; display: grid; justify-items: center; gap: 12px; }
+.pod-sol { width: 92px; height: 92px; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(120, 60, 10, .2)); animation: sway 3.2s ease-in-out infinite; }
+.pod-card { width: 100%; min-height: 188px; display: grid; align-content: center; justify-items: center; gap: 6px; padding: 18px 16px; text-align: center; border-radius: 26px; background: var(--surface); border: 2px solid var(--line); box-shadow: 0 6px 0 var(--line); overflow-wrap: anywhere; }
+.pod-card.narr { background: color-mix(in srgb, var(--sun) 13%, var(--surface)); border-color: color-mix(in srgb, var(--sun) 55%, var(--line)); }
+.pod-tag { font: 800 11.5px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); min-height: 1.2em; }
+.pod-emoji { font-size: 52px; line-height: 1; }
+.pod-es { font: 800 clamp(26px, 8vw, 38px)/1.15 var(--font-d); color: var(--primary-ink); min-width: 0; }
+.pod-card.sentence .pod-es { font-size: clamp(20px, 5.6vw, 28px); font-weight: 700; line-height: 1.3; }
+.pod-card.narr .pod-es { color: var(--ink); font-size: clamp(22px, 6vw, 30px); }
+.pod-es.masked, .pod-de.masked { color: var(--muted); letter-spacing: .25em; }
+.pod-de { font-size: clamp(16px, 4.4vw, 20px); font-weight: 600; color: var(--ink-2); min-height: 1.3em; }
+.pod-state { min-height: 1.6em; font-weight: 800; font-size: 16px; color: var(--ink-2); text-align: center; }
+.pod-state[data-k="speak"] { color: var(--primary-ink); }
+.pod-wait { width: min(100%, 360px); height: 8px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.pod-wait i { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--sun), var(--primary)); }
+
+.pod-dock { flex: none; padding: 10px max(18px, env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left)); background: color-mix(in srgb, var(--surface) 88%, transparent); border-top: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.pod-dock > * { max-width: 560px; margin-inline: auto; }
+.pod-seek .bar { height: 8px; }
+.pod-times { display: flex; justify-content: space-between; margin-top: 4px; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pod-ctrl { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px auto 4px; }
+.pod-btn { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border: 2px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink-2); cursor: pointer; transition: transform .1s; }
+.pod-btn .ic { width: 22px; height: 22px; }
+.pod-btn:active { transform: scale(.93); }
+.pod-btn.on { color: var(--violet-ink); border-color: var(--violet); background: color-mix(in srgb, var(--violet) 12%, var(--surface)); }
+.pod-btn.big { width: 76px; height: 76px; border-color: var(--primary-dk); background: linear-gradient(180deg, var(--primary-2), var(--primary)); color: #fff; box-shadow: 0 5px 0 var(--primary-dk), 0 14px 26px -10px rgba(214, 63, 30, .6); }
+.pod-btn.big .ic { width: 34px; height: 34px; }
+.pod-status { text-align: center; min-height: 1.4em; }
+.pod-end { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; max-width: 560px; margin: auto; text-align: center; }
+.pod-end h2 { margin: 0; font-size: clamp(26px, 7vw, 34px); font-weight: 800; }
+.pod-end p { margin: 0; }

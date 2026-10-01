@@ -211,8 +211,11 @@
   WSK.homeAreas = function () {
     const vl = countLearned('v'), vd = WSK.verbDue().length;
     const tl = countLearned('t') + countLearned('q') + countLearned('m') + countLearned('s'), td = WSK.drillDue().length;
+    const tk = WSK.talk ? WSK.talk.list.filter((s) => WSK.talk.stat(s.id).runs).length : 0, pod = WSK.state.pod || {};
     return `<section class="area-cards">
-      <a class="area-card" href="#/verbs" style="--ac:#FF5A36"><span class="ar-ic">🏃</span><div><b>Verben</b><span>${vl ? `${vl} Verb-Formen gelernt` : 'Konjugieren, wollen, können, müssen …'}${vd ? ` · <em>${vd} fällig</em>` : ''}</span></div></a>
-      <a class="area-card" href="#/tenses" style="--ac:#7C5CFF"><span class="ar-ic">⏳</span><div><b>Zeiten &amp; Fragen</b><span>${tl ? `${tl} Sätze gelernt` : 'Zeitformen verstehen, Fragen stellen'}${td ? ` · <em>${td} fällig</em>` : ''}</span></div></a></section>`;
+      <a class="area-card" href="#/talk" style="--ac:#10B7A5"><span class="ar-ic">🗣️</span><div><b>Gespräch</b><span>${tk ? `${tk} von ${WSK.talk.list.length} geschafft` : 'Echte Situationen üben'}</span></div></a>
+      <a class="area-card" href="#/podcast" style="--ac:#7C5CFF"><span class="ar-ic">🎧</span><div><b>Podcast</b><span>${pod.eps ? `${Math.round((pod.secs || 0) / 60)} Min. gehört` : 'Lernen mit den Ohren'}</span></div></a>
+      <a class="area-card" href="#/verbs" style="--ac:#FF5A36"><span class="ar-ic">🏃</span><div><b>Verben</b><span>${vl ? `${vl} Formen gelernt` : 'Konjugieren, wollen, können'}${vd ? ` · <em>${vd} fällig</em>` : ''}</span></div></a>
+      <a class="area-card" href="#/tenses" style="--ac:#FFB020"><span class="ar-ic">⏳</span><div><b>Zeiten &amp; Fragen</b><span>${tl ? `${tl} Sätze gelernt` : 'Zeitformen, Fragen stellen'}${td ? ` · <em>${td} fällig</em>` : ''}</span></div></a></section>`;
   };
 })();

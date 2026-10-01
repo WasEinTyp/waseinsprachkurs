@@ -1,0 +1,16 @@
+[
+ { "size": [390, 844, false], "dark": false, "nav": "http://localhost:5173/?today=2026-10-01", "wait": 2200 },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms));const c=(s)=>{const e=document.querySelector(s);if(e)e.click();}; c('.onboard [data-next]');await w(200);c('[data-save-name]');await w(200);c('.onboard [data-next]');await w(200);c('.onboard [data-next]');await w(300);c('[data-finish]');await w(700); WSK.words.slice(0,70).forEach((x,i)=>{WSK.srs.introduce(x.id,false); if(i%4==0) WSK.state.words[x.id].lvl=3;}); WSK.sents.slice(0,25).forEach(x=>WSK.ssrs.introduce(x.id,false)); WSK.state.settings.name='Timo'; WSK.state.days[WSK.date.today()]={xp:40,nw:5,rv:0,ns:0,rs:0,ok:10,bad:2,secs:300,ses:2}; WSK.state.days['2026-09-30']={xp:60,nw:5,rv:0,ns:0,rs:0,ok:10,bad:2,secs:300,ses:2};WSK.state.days['2026-09-29']={xp:60,nw:5,rv:0,ns:0,rs:0,ok:10,bad:2,secs:300,ses:2};WSK.state.days['2026-09-28']={xp:60,nw:5,rv:0,ns:0,rs:0,ok:10,bad:2,secs:300,ses:2}; WSK.save(true); location.hash='#/home'; await w(300); await w(600); return 'ok'; })()" },
+ { "shot": "m-01-home.png" },
+ { "shot": "m-02-home-full.png", "full": true },
+ { "eval": "location.hash='#/learn'; 'learn'", "sleep": 700 },
+ { "shot": "m-03-learn.png" },
+ { "eval": "location.hash='#/podcast'; 'podcast'", "sleep": 700 },
+ { "shot": "m-04-podcast.png" },
+ { "eval": "location.hash='#/talk'; 'talk'", "sleep": 700 },
+ { "shot": "m-05-talk.png" },
+ { "eval": "location.hash='#/words'; 'words'", "sleep": 700 },
+ { "shot": "m-06-words.png" },
+ { "eval": "(async()=>{const w=(ms)=>new Promise(r=>setTimeout(r,ms)); WSK.podcast.fastStart=false; WSK.podDaily(); await w(1500); return 'player'; })()" },
+ { "shot": "m-07-player.png" }
+]

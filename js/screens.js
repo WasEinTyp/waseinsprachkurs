@@ -188,6 +188,8 @@
 
     ${UI.solSays({ ...solMessage(p), cls: 'home-sol' })}
 
+    ${WSK.homeRecs ? WSK.homeRecs() : ''}
+
     <section class="stat-row">
       <div class="stat t-red"><span class="s-ic">🔥</span><b>${streak}</b><span>${streak === 1 ? 'Tag' : 'Tage'} Serie</span></div>
       <div class="stat t-sun"><span class="s-ic">⭐</span><b>${d.xp}</b><span>XP heute</span></div>
@@ -234,6 +236,7 @@
     view.querySelectorAll('[data-lv]').forEach((b) => b.addEventListener('click', () => { ui.homeLevel = b.dataset.lv; WSK.app.refresh(); }));
     view.querySelectorAll('[data-guide-tab]').forEach((a) => a.addEventListener('click', () => { try { localStorage.setItem('queCurso.guideTab', a.dataset.guideTab); } catch (e) { /* egal */ } }));
     bindSolActions(view);
+    if (WSK.bindRecs) WSK.bindRecs(view);
   };
 
   function unitModal(i) {
@@ -768,6 +771,7 @@
       a.download = `que-curso-backup-${D.today()}.json`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      WSK.state.lastBackup = D.today(); WSK.save(true);
       UI.toast('Backup gespeichert.', { icon: '💾' });
     });
     view.querySelector('[data-import]').addEventListener('change', (e) => {

@@ -3,7 +3,7 @@
  { "shot": "smoke-01-onboarding.png" },
  { "eval": "(async()=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)); const c=(s)=>document.querySelector(s).click(); c('.onboard [data-next]'); await w(200); c('[data-save-name]'); await w(200); c('.onboard [data-next]'); await w(200); c('.onboard [data-next]'); await w(300); c('[data-finish]'); await w(900); return document.querySelector('.hero h1').textContent; })()" },
  { "shot": "smoke-02-home.png" },
- { "eval": "(async()=>{ for (const r of ['sents','verbs','tenses','games','words','guide','stats','settings','home']) { location.hash = '#/' + r; await new Promise(x=>setTimeout(x,500)); } return 'routes ok'; })()" },
+ { "eval": "(async()=>{ for (const r of ['learn','sents','verbs','tenses','talk','podcast','games','words','guide','stats','settings','home']) { location.hash = '#/' + r; await new Promise(x=>setTimeout(x,500)); } return 'routes ok'; })()" },
  { "eval": "(async()=>{ for (const g of WSK.games.list.map(x=>x.id)) { WSK.games.start(g); await new Promise(x=>setTimeout(x,200)); WSK.games.close(); } return 'games ok'; })()" },
  { "eval": "(async()=>{ WSK.startLesson(); await new Promise(x=>setTimeout(x,600)); const c = WSK.session.current(); return 'lesson item ' + c.item.kind + ' ' + c.item.id; })()" },
  { "shot": "smoke-03-lesson.png" },
