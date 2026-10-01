@@ -4,7 +4,7 @@
  * Strategie: alle App-Dateien beim Installieren in einen versionierten Cache legen und von dort ausliefern
  * (Cache-first). Videos (.mp4) laufen bewusst am Service Worker vorbei – Safari braucht dafür Range-Anfragen;
  * ohne Netz zeigt die App dann das Standbild. Schriften von Google werden beim ersten Besuch zwischengespeichert. */
-const VERSION = '4f273c5452';
+const VERSION = 'fadc7c9913';
 const FILES = [
   'assets/icons/apple-touch-icon.png',
   'assets/icons/icon-192.png',

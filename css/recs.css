@@ -45,3 +45,19 @@
 .lc-foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 10px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
 .lc-foot em { font-style: normal; color: var(--primary-ink); }
 .learn-extra { margin-top: 16px; }
+
+/* ---------- Stimmen-Assistent ---------- */
+.vh h2 { margin: 0 36px 6px 0; font-size: 24px; }
+.vh h4 { margin: 16px 0 6px; font-size: 16px; }
+.vh-list { display: grid; gap: 6px; }
+.vh-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; padding: 9px 12px; text-align: left; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.vh-row.on { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, var(--surface)); }
+.vh-main { min-width: 0; display: grid; }
+.vh-main b { font-size: 15px; overflow-wrap: anywhere; }
+.vh-main small { color: var(--muted); font-size: 12.5px; }
+.vh-play { flex: none; font: 800 12.5px var(--font); color: var(--teal-ink); }
+.vh-btns { margin-top: 12px; }
+.vh-how { margin-top: 8px; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); font-size: 14.5px; line-height: 1.5; }
+.vh-how summary { cursor: pointer; font-weight: 800; }
+.vh-how ol { margin: 8px 0 4px; padding-left: 20px; }
+.vh-how li { margin-bottom: 4px; }

@@ -5,15 +5,28 @@
 
   /* ---------------- Sprachausgabe ---------------- */
   const synth = window.speechSynthesis;
+  const NOVELTY = /^(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox)\b/i;
+  const PREFERRED = /m[oó]nica|paulina|jorge|juan|diego|soledad|carlos|ang[eé]lica|francisca|marisol|helena|laura|pablo|sabina|ra[uú]l|elvira|[aá]lvaro|dalia|anna|petra|markus|hedda|katja|conrad|amala|google/i;
   const TTS = (WSK.tts = {
     supported: !!synth && typeof window.SpeechSynthesisUtterance === 'function',
     voices: [],
     deVoices: [],
+    /* Spaß- und Effekt-Stimmen (iPhone/Mac: Eddy, Flo, Grandma, Reed …) klingen kratzig oder verzerrt – nie automatisch nehmen */
+    usable: (v) => !NOVELTY.test(String(v.name).trim()),
+    /* Qualität grob nach dem Namen: „Erweitert/Premium/Enhanced/Natural/Online“ = gut, „Kompakt“ = einfach */
+    quality(v) {
+      const n = String(v.name);
+      if (/erweitert|verbessert|enhanced|premium|improved|hochwertig|neural|natural|online|google/i.test(n)) return 'high';
+      if (/compact|kompakt/i.test(n)) return 'low';
+      return 'normal';
+    },
+    qualityLabel(v) { return { high: 'gute Qualität', normal: 'Standard-Qualität', low: 'einfache Qualität' }[TTS.quality(v)]; },
     load() {
       if (!TTS.supported) return;
       const all = synth.getVoices();
-      TTS.voices = all.filter((v) => /^es([-_]|$)/i.test(v.lang));
-      TTS.deVoices = all.filter((v) => /^de([-_]|$)/i.test(v.lang));
+      const pick = (re) => { const l = all.filter((v) => re.test(v.lang)); const good = l.filter(TTS.usable); return good.length ? good : l; };
+      TTS.voices = pick(/^es([-_]|$)/i);
+      TTS.deVoices = pick(/^de([-_]|$)/i);
       document.dispatchEvent(new CustomEvent('wsk:voices'));
     },
     score(v, variant) {
@@ -22,9 +35,11 @@
       if (lang.toLowerCase() === variant.toLowerCase()) s += 10;
       else if (variant === 'es-MX' && /es-(US|419|MX|CO|AR)/i.test(lang)) s += 7;
       else if (/^es/i.test(lang)) s += 3;
-      if (/natural|neural|online|premium|enhanced/i.test(v.name)) s += 5;
-      if (/google/i.test(v.name)) s += 3;
+      const q = TTS.quality(v);
+      s += q === 'high' ? 6 : q === 'low' ? -3 : 0;
+      if (/google/i.test(v.name)) s += 1;
       if (v.localService === false) s += 1;
+      if (PREFERRED.test(v.name)) s += 1;                 // bewährte Systemstimmen bei Gleichstand bevorzugen
       return s;
     },
     voice() {
@@ -33,11 +48,13 @@
       if (set.voice) { const v = TTS.voices.find((x) => x.name === set.voice); if (v) return v; }
       return TTS.voices.slice().sort((a, b) => TTS.score(b, set.variant) - TTS.score(a, set.variant))[0];
     },
-    /* Deutsche Stimme (für Sols Ansagen im Podcast): de-DE bevorzugt, natürliche Stimmen zuerst */
+    /* Deutsche Stimme (für Sols Ansagen im Podcast): de-DE bevorzugt, gute Qualität zuerst; im Menü wählbar (deVoice) */
+    deScore(v) { const q = TTS.quality(v); return (/^de[-_]DE$/i.test(v.lang) ? 6 : 0) + (q === 'high' ? 6 : q === 'low' ? -3 : 0) + (v.localService === false ? 1 : 0) + (PREFERRED.test(v.name) ? 1 : 0); },
     deVoice() {
       if (!TTS.deVoices.length) return null;
-      const sc = (v) => (/^de[-_]DE$/i.test(v.lang) ? 6 : 0) + (/natural|neural|online|premium|enhanced/i.test(v.name) ? 5 : 0) + (/google/i.test(v.name) ? 3 : 0) + (v.localService === false ? 1 : 0);
-      return TTS.deVoices.slice().sort((a, b) => sc(b) - sc(a))[0];
+      const want = WSK.state.settings.deVoice;
+      if (want) { const v = TTS.deVoices.find((x) => x.name === want); if (v) return v; }
+      return TTS.deVoices.slice().sort((a, b) => TTS.deScore(b) - TTS.deScore(a))[0];
     },
     /* Zweite spanische Stimme für Dialoge (nach Möglichkeit das andere Geschlecht); null, wenn es nur eine gibt */
     gender(v) {
@@ -66,9 +83,9 @@
           const v = de ? TTS.deVoice() : alt || TTS.voice();
           if (v) u.voice = v;
           u.lang = v ? v.lang : de ? 'de-DE' : WSK.state.settings.variant;
-          const base = de ? 1 : WSK.state.settings.rate || 0.9;
-          u.rate = Math.max(0.4, Math.min(1.6, base * (opts.rate || 1) * (opts.slow ? 0.65 : 1)));
-          u.pitch = opts.pitch || (!de && opts.alt && !alt ? 0.8 : 1); // nur eine Stimme: Partner klingt tiefer
+          const base = de ? 1 : WSK.state.settings.rate || 1;
+          u.rate = Math.max(0.5, Math.min(1.6, base * (opts.rate || 1) * (opts.slow ? 0.75 : 1))); // starkes Dehnen macht einfache Stimmen kratzig
+          u.pitch = opts.pitch || 1;                       // Tonhöhe nicht verändern (Verzerrung)
           let done = false;
           const fin = () => { if (!done) { done = true; resolve(); } };
           u.onend = fin; u.onerror = fin;

@@ -170,7 +170,7 @@
     solVideo: true,
     variant: 'es-ES',
     voice: '',
-    rate: 0.9,
+    rate: 1,               // Sprechtempo (1 = Originalgeschwindigkeit der Stimme, klingt am saubersten)
     sfx: true,
     theme: 'auto',
     focusUnit: -1,         // -1 = der Reihe nach
@@ -187,7 +187,7 @@
 
   function fresh() {
     return {
-      v: 1, dataV: 2, created: D.today(), onboarded: false,
+      v: 1, dataV: 3, created: D.today(), onboarded: false,
       settings: { ...DEFAULT_SETTINGS },
       words: {}, sents: {}, drills: {}, talks: {}, pod: { eps: 0, secs: 0, last: null }, recs: {}, lastBackup: null, days: {}, xp: 0,
       streak: { count: 0, best: 0, last: null },
@@ -197,7 +197,7 @@
 
   /* Ältere Spielstände angleichen. dataV 2 = Einheiten nach Stufe sortiert (4.000-Wörter-Ausbau):
    * focusUnit war bis dahin die Ladeposition (= rawIdx) und wird auf die neue Position umgerechnet. */
-  const DATA_V = 2;
+  const DATA_V = 3;
   function migrate(d) {
     d.settings = { ...DEFAULT_SETTINGS, ...(d.settings || {}) };
     d.totals = d.totals || { ok: 0, bad: 0, secs: 0 };
@@ -213,6 +213,7 @@
       const u = f >= 0 ? WSK.units.find((x) => x.rawIdx === f) : null;
       d.settings.focusUnit = u ? u.idx : -1;
     }
+    if ((d.dataV || 1) < 3 && d.settings.rate === 0.9) d.settings.rate = 1; // dataV 3: das alte Standardtempo 0,9 klang auf dem Handy kratzig
     d.dataV = DATA_V;
     return d;
   }

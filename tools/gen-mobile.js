@@ -32,6 +32,7 @@ scenes.push({ name: 'Wort-Fenster', setup: `location.hash='#/words'; await w(500
 scenes.push({ name: 'Ziel-Assistent', setup: `WSK.goalModal(); await w(500);`, cleanup: `document.querySelector('.modal-x').click(); await w(300);` });
 scenes.push({ name: 'Tipps-Fenster', setup: `location.hash='#/home'; await w(500); const b=document.querySelector('[data-recs-all]'); if(!b) throw new Error('keine Tipps'); b.click(); await w(500);`, cleanup: `document.querySelector('.modal-x').click(); await w(300);` });
 scenes.push({ name: 'Verb-Fenster', setup: `location.hash='#/verbs'; await w(500); document.querySelector('.verb-chip').click(); await w(500);`, cleanup: `document.querySelector('.modal-x').click(); await w(300);` });
+scenes.push({ name: 'Stimmen-Assistent', setup: `WSK.voiceHelp(); await w(500);`, cleanup: `document.querySelector('.modal-x').click(); await w(300);` });
 scenes.push({ name: 'Onboarding', setup: `WSK.onboarding(); await w(300); const res=[]; for (let i=0;i<5;i++){ const a=${'__AUDIT__'}; if(a!=='ok') res.push('Schritt '+(i+1)+': '+a); const n=document.querySelector(".onboard [data-next]"); if(!n) break; n.click(); await w(550);} window.__multi=res.length?res.join(' ## '):'ok';`, multi: true, cleanup: `const o=document.querySelector('.onboard'); if(o) o.remove(); document.body.classList.remove('in-session');` });
 
 /* Übungen */

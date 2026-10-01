@@ -79,6 +79,7 @@ Die App ist eine **installierbare Web-App**: Sie bekommt ein Symbol auf dem Home
 **Gut zu wissen**
 
 - Der Lernstand der Home-Bildschirm-App ist **getrennt von Safari**. Wenn du schon im Browser gelernt hast: dort **Menü → Daten → Exportieren**, in der App **Importieren**. Mach auch sonst ab und zu ein Backup.
+- **Stimme kratzig oder undeutlich?** Das liegt an der Stimme des Geräts. Unter **Menü → Audio → Stimmen testen** (auch im Podcast und im Gespräch unter dem Zahnrad) hörst du alle Stimmen an und wählst die beste. Auf dem iPhone lohnt sich der Download einer „erweiterten“ Stimme: Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Spanisch (und Deutsch). Spaß-Stimmen wie „Eddy“ oder „Flo“ nimmt die App nie automatisch.
 - Sprachausgabe funktioniert. Die **Spracherkennung** (Sprech-Übungen) kann in Home-Bildschirm-Apps auf dem iPhone fehlen – dann nutzt du „Kann gerade nicht sprechen“ und tippst.
 - Der **Podcast** wird vom Gerät vorgelesen und läuft nur bei **eingeschaltetem Bildschirm** (die App hält ihn wach). Beim Sperren oder Verlassen der App stoppt die Sprachausgabe – das liegt am Browser. Für Spanisch braucht das iPhone eine spanische Stimme (Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen).
 - Die kurzen Sol-Videos brauchen Internet; ohne Netz zeigt die App ein Standbild.

@@ -241,6 +241,53 @@
     WSK.tts.speak(b.dataset.say, { slow: b.hasAttribute('data-slow'), alt: b.hasAttribute('data-alt') }).then(() => b.classList.remove('speaking'));
   });
 
+
+  /* ---------------- Stimmen-Assistent: Stimmen anhören, die beste wählen, bessere herunterladen ---------------- */
+  WSK.voiceHelp = function () {
+    const TTS = WSK.tts, st = WSK.state.settings;
+    const es_sample = '¡Hola! Me llamo Sol. ¿Qué tal? Vamos a aprender español juntos.';
+    const de_sample = 'Hallo, ich bin Sol. Heute üben wir gemeinsam Spanisch.';
+    const sorted = (list, sc) => list.slice().sort((a, b) => sc(b) - sc(a));
+    const row = (v, kind, cur) => `<button type="button" class="vh-row ${cur && cur.name === v.name ? 'on' : ''}" data-voice="${esc(v.name)}" data-kind="${kind}">
+      <span class="vh-main"><b>${esc(v.name)}</b><small>${esc(v.lang)} · ${TTS.qualityLabel(v)}</small></span><span class="vh-play">${cur && cur.name === v.name ? '✓ in Gebrauch' : '▶ Anhören'}</span></button>`;
+    const body = () => {
+      const es = sorted(TTS.voices, (v) => TTS.score(v, st.variant)).slice(0, 10), de = sorted(TTS.deVoices, TTS.deScore).slice(0, 6);
+      const ces = TTS.voice(), cde = TTS.deVoice();
+      return `<div class="vh"><h2>🔊 Stimme verbessern</h2>
+        <p class="muted small">Klingt die Stimme kratzig oder undeutlich? Das liegt fast immer an der <b>Stimme deines Geräts</b>, nicht an der App. Hör dir unten die Stimmen an und wähle die beste – oder lade bessere herunter.</p>
+        <h4>Spanische Stimmen ${es.length ? '' : '<span class="muted small">– keine gefunden</span>'}</h4>
+        <div class="vh-list">${es.map((v) => row(v, 'es', ces)).join('')}</div>
+        <h4>Deutsche Stimme (Sols Ansagen im Podcast)</h4>
+        <div class="vh-list">${de.length ? de.map((v) => row(v, 'de', cde)).join('') : '<p class="muted small">Keine deutsche Stimme gefunden.</p>'}</div>
+        <div class="row wrap gap vh-btns"><button type="button" class="btn ghost small" data-vh-rate>Tempo auf normal (${(st.rate || 1).toFixed(2).replace('.', ',')} → 1,00)</button>
+          <button type="button" class="btn ghost small" data-vh-auto>Automatisch wählen</button></div>
+        <h4>Bessere Stimmen herunterladen</h4>
+        <details class="vh-how" open><summary>📱 iPhone / iPad</summary><ol>
+          <li><b>Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen</b> öffnen und <b>Spanisch</b> wählen.</li>
+          <li>Eine Stimme antippen (z. B. Mónica, Paulina, Jorge oder Juan) und die Qualität <b>„Erweitert“ oder „Premium“</b> laden (WLAN, je nach Stimme einige hundert MB).</li>
+          <li>Dasselbe für <b>Deutsch</b> (z. B. Anna).</li>
+          <li>App <b>komplett schließen</b> und neu öffnen, dann hier die neue Stimme auswählen.</li></ol>
+          <p class="muted small">Die einfache Standard-Stimme klingt ohne den Download schnell blechern. Siri-Stimmen stehen Web-Apps leider nicht zur Verfügung.</p></details>
+        <details class="vh-how"><summary>🤖 Android</summary><ol><li><b>Einstellungen → System → Sprachen → Text-zu-Sprache-Ausgabe</b>, Google wählen und bei <b>Stimmen installieren</b> Spanisch (und Deutsch) in hoher Qualität laden.</li><li>Browser neu starten und hier die Stimme wählen.</li></ol></details>
+        <details class="vh-how"><summary>💻 Windows / Mac</summary><p class="muted small">Am besten klingt die App im <b>Edge</b>-Browser: Er bringt natürliche „Online (Natural)“-Stimmen mit. Auf dem Mac helfen unter <b>Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte</b> hochwertige Stimmen.</p></details>
+        <p class="muted small">Zusätzlich hilft: Sprechtempo im Menü auf 1,0 lassen. Starkes Verlangsamen lässt einfache Stimmen kratzig klingen.</p></div>`;
+    };
+    const m = UI.modal(body(), { cls: 'narrow' });
+    m.el.addEventListener('click', (e) => {
+      const r = e.target.closest('[data-voice]');
+      if (r) {
+        const kind = r.dataset.kind;
+        st[kind === 'de' ? 'deVoice' : 'voice'] = r.dataset.voice; WSK.save();
+        const holder = m.el.querySelector('.vh'), scroll = m.el.scrollTop;
+        holder.outerHTML = body(); m.el.scrollTop = scroll;
+        WSK.tts.speak(kind === 'de' ? de_sample : es_sample, { lang: kind === 'de' ? 'de' : undefined });
+        return;
+      }
+      if (e.target.closest('[data-vh-rate]')) { st.rate = 1; WSK.save(); UI.toast('Sprechtempo steht jetzt auf normal.', { icon: '🔊' }); const holder = m.el.querySelector('.vh'); const scroll = m.el.scrollTop; holder.outerHTML = body(); m.el.scrollTop = scroll; WSK.tts.speak(es_sample); return; }
+      if (e.target.closest('[data-vh-auto]')) { st.voice = ''; st.deVoice = ''; WSK.save(); const holder = m.el.querySelector('.vh'); const scroll = m.el.scrollTop; holder.outerHTML = body(); m.el.scrollTop = scroll; WSK.tts.speak(es_sample); }
+    });
+  };
+
   UI.greeting = function () {
     const h = new Date().getHours();
     if (h < 5) return '¡Buenas noches';

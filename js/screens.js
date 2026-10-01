@@ -696,9 +696,11 @@
         <h3>🔊 Audio</h3>
         <div class="set-row col"><div><b>Spanisch aus …</b></div>${seg('variant', [['es-ES', '💃 Spanien'], ['es-MX', '🌎 Lateinamerika']])}</div>
         <div class="set-row"><div><b>Stimme</b><span>${voices.length ? `${voices.length} spanische Stimmen gefunden` : WSK.tts.supported ? 'Keine spanische Stimme gefunden' : 'Sprachausgabe nicht unterstützt'}</span></div>
-          <select data-set="voice"><option value="">Automatisch (beste Stimme)</option>${voices.map((v) => `<option value="${esc(v.name)}" ${st.voice === v.name ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')}</select></div>
+          <select data-set="voice"><option value="">Automatisch (beste Stimme)</option>${voices.map((v) => `<option value="${esc(v.name)}" ${st.voice === v.name ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})${WSK.tts.quality(v) === 'high' ? ' ★' : ''}</option>`).join('')}</select></div>
         <div class="set-row col"><div><b>Sprechtempo</b></div>
           <div class="range-row"><input type="range" min="0.5" max="1.2" step="0.05" data-set="rate" value="${st.rate}"><output data-out="rate">${st.rate}</output></div></div>
+        <div class="set-row"><div><b>Klingt kratzig oder undeutlich?</b><span>Aktuell: ${WSK.tts.voice() ? `${esc(WSK.tts.voice().name)} · ${WSK.tts.qualityLabel(WSK.tts.voice())}` : 'keine spanische Stimme gefunden'}</span></div>
+          <button type="button" class="btn ghost small" data-voicehelp>Stimmen testen</button></div>
         ${sw('sfx', 'Soundeffekte', '')}
         <div class="row"><button class="btn ghost" data-test>▶ Stimme testen</button></div>
       </section>
@@ -763,6 +765,7 @@
       sg.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
       apply(sg.dataset.seg, b.dataset.v);
     }));
+    view.querySelector('[data-voicehelp]').addEventListener('click', () => WSK.voiceHelp());
     view.querySelector('[data-test]').addEventListener('click', () => WSK.tts.speak('¡Hola! Me llamo Sol. ¿Qué tal? Vamos a aprender español juntos.'));
     view.querySelector('[data-export]').addEventListener('click', () => {
       const blob = new Blob([WSK.exportData()], { type: 'application/json' });

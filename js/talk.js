@@ -409,8 +409,10 @@
       <label class="set-row"><div><b>Übersetzung anzeigen</b></div><span class="switch"><input type="checkbox" data-trans ${S.trans ? 'checked' : ''}><i></i></span></label>
       <div class="set-row col"><div><b>Gerade unpassend?</b><span>Gilt eine Stunde lang – auch in Übungen.</span></div>
         <div class="row wrap gap"><button type="button" class="btn ghost" data-q="listen">${quiet('listen') ? '🔊 Ton wieder an' : '🔇 Kann gerade nicht hören'}</button>
-        <button type="button" class="btn ghost" data-q="speak">${quiet('speak') ? '🎙️ Wieder sprechen' : '⌨️ Kann gerade nicht sprechen'}</button></div></div></div>`, { cls: 'small' });
+        <button type="button" class="btn ghost" data-q="speak">${quiet('speak') ? '🎙️ Wieder sprechen' : '⌨️ Kann gerade nicht sprechen'}</button></div></div>
+      <div class="set-row"><div><b>Stimme klingt schlecht?</b><span>Stimmen anhören und bessere laden.</span></div><button type="button" class="btn ghost small" data-vh>Stimmen</button></div></div>`, { cls: 'small' });
     m.el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-vh]')) { m.close(); WSK.voiceHelp(); return; }
       const b = e.target.closest('button[data-v]');
       if (b && !b.disabled) {
         const sg = b.closest('[data-seg]');

@@ -257,8 +257,10 @@
       <div class="set-row col"><div><b>Sprechtempo</b></div>${seg('podRate', [[0.8, 'Langsam'], [1, 'Normal'], [1.2, 'Schnell']])}</div>
       <div class="set-row col"><div><b>Denkpausen</b><span>Wie lange es still ist, bevor die Lösung kommt.</span></div>${seg('podPause', [[0.7, 'Kurz'], [1, 'Normal'], [1.6, 'Lang']])}</div>
       <div class="set-row col"><div><b>Spanischer Text</b><span>Aus = reines Hörtraining ohne Mitlesen.</span></div>${seg('podText', [[true, 'Anzeigen'], [false, 'Verstecken']])}</div>
-      <div class="set-row col"><div><b>Deutsche Übersetzung</b></div>${seg('podTrans', [[true, 'Anzeigen'], [false, 'Verstecken']])}</div></div>`, { cls: 'small' });
+      <div class="set-row col"><div><b>Deutsche Übersetzung</b></div>${seg('podTrans', [[true, 'Anzeigen'], [false, 'Verstecken']])}</div>
+      <div class="set-row"><div><b>Stimme klingt schlecht?</b><span>Stimmen anhören, wählen und bessere laden.</span></div><button type="button" class="btn ghost small" data-vh>Stimmen</button></div></div>`, { cls: 'small' });
     m.el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-vh]')) { WSK.voiceHelp(); return; }
       const b = e.target.closest('button[data-v]'); if (!b) return;
       const sg = b.closest('[data-seg]'), key = sg.dataset.seg;
       sg.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
@@ -318,6 +320,7 @@
           <div class="seg" data-seg="podMode">${Object.entries(MODES).map(([k, m]) => `<button type="button" data-v="${k}" class="${st.podMode === k ? 'on' : ''}">${m.icon} ${m.name}</button>`).join('')}</div></div>
         <p class="muted small">${MODES[st.podMode].text}</p>
         <button class="btn primary huge wide" data-a="daily" ${noTts ? 'disabled' : ''}>${UI.icon('play')} Podcast starten</button>
+        <p class="muted small pod-note"><button type="button" class="link btn-link" data-voicehelp>🔊 Stimme klingt kratzig oder undeutlich?</button></p>
         <p class="muted small pod-note">🔆 Der Bildschirm bleibt dabei an. Auf dem iPhone stoppt die Sprachausgabe, sobald das Gerät gesperrt wird oder du die App verlässt.</p>
       </section>
 
@@ -342,6 +345,7 @@
         <p><b>Grenze:</b> Anders als ein echter Podcast läuft das nicht im Hintergrund oder bei gesperrtem Bildschirm. Das liegt am Browser, nicht an der App.</p></details>`;
 
     view.onclick = (e) => {
+      if (e.target.closest('[data-voicehelp]')) { WSK.voiceHelp(); return; }
       const seg = e.target.closest('[data-seg] button');
       if (seg) { const k = seg.closest('[data-seg]').dataset.seg; st[k] = k === 'podMins' ? Number(seg.dataset.v) : seg.dataset.v; WSK.save(); WSK.app.refresh(); return; }
       const loc = e.target.closest('[data-seg-local] button'); if (loc) { pui.scope = loc.dataset.v; WSK.app.refresh(); return; }
