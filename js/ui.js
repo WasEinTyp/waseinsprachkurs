@@ -270,7 +270,8 @@
           <p class="muted small">Die einfache Standard-Stimme klingt ohne den Download schnell blechern. Siri-Stimmen stehen Web-Apps leider nicht zur Verfügung.</p></details>
         <details class="vh-how"><summary>🤖 Android</summary><ol><li><b>Einstellungen → System → Sprachen → Text-zu-Sprache-Ausgabe</b>, Google wählen und bei <b>Stimmen installieren</b> Spanisch (und Deutsch) in hoher Qualität laden.</li><li>Browser neu starten und hier die Stimme wählen.</li></ol></details>
         <details class="vh-how"><summary>💻 Windows / Mac</summary><p class="muted small">Am besten klingt die App im <b>Edge</b>-Browser: Er bringt natürliche „Online (Natural)“-Stimmen mit. Auf dem Mac helfen unter <b>Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte</b> hochwertige Stimmen.</p></details>
-        <p class="muted small">Zusätzlich hilft: Sprechtempo im Menü auf 1,0 lassen. Starkes Verlangsamen lässt einfache Stimmen kratzig klingen.</p></div>`;
+        <p class="muted small">Zusätzlich hilft: Sprechtempo im Menü auf 1,0 lassen. Starkes Verlangsamen lässt einfache Stimmen kratzig klingen.</p>
+        ${WSK.recVoiceHidden && WSK.recVoiceHidden() ? '<div class="row wrap gap vh-btns"><button type="button" class="btn ghost small" data-vh-unhide>Hinweis auf der Startseite wieder anzeigen</button></div>' : ''}</div>`;
     };
     const m = UI.modal(body(), { cls: 'narrow' });
     m.el.addEventListener('click', (e) => {
@@ -284,6 +285,7 @@
         return;
       }
       if (e.target.closest('[data-vh-rate]')) { st.rate = 1; WSK.save(); UI.toast('Sprechtempo steht jetzt auf normal.', { icon: '🔊' }); const holder = m.el.querySelector('.vh'); const scroll = m.el.scrollTop; holder.outerHTML = body(); m.el.scrollTop = scroll; WSK.tts.speak(es_sample); return; }
+      if (e.target.closest('[data-vh-unhide]')) { WSK.recVoiceShow(); UI.toast('Der Hinweis erscheint wieder auf der Startseite.', { icon: '🔊' }); const holder = m.el.querySelector('.vh'); const scroll = m.el.scrollTop; holder.outerHTML = body(); m.el.scrollTop = scroll; return; }
       if (e.target.closest('[data-vh-auto]')) { st.voice = ''; st.deVoice = ''; WSK.save(); const holder = m.el.querySelector('.vh'); const scroll = m.el.scrollTop; holder.outerHTML = body(); m.el.scrollTop = scroll; WSK.tts.speak(es_sample); }
     });
   };

@@ -17,8 +17,10 @@
       leeches: WSK.srs.ids().filter((id) => WSK.srs.isLeech(id)).length,
       talkRuns, podEps: (st.pod && st.pod.eps) || 0, games: Object.keys(st.hs || {}).length,
       hour: new Date().getHours(), s: set(), lastBackup: st.lastBackup,
+      ttsOk: WSK.tts.supported, voiceName: WSK.tts.voice() ? WSK.tts.voice().name : '', voiceQ: WSK.tts.voice() ? WSK.tts.quality(WSK.tts.voice()) : 'none',
     };
   }
+  const fn = (x, c) => (typeof x === 'function' ? x(c) : x); // Texte dürfen von der Lage abhängen
   const words = (n) => ({ label: `ab ${n} Wörtern`, ok: (c) => c.learned >= n, left: (c) => `noch ${Math.max(0, n - c.learned)} Wörter` });
   const sents = (n) => ({ label: `ab ${n} Sätzen`, ok: (c) => c.sLearned >= n, left: (c) => `noch ${Math.max(0, n - c.sLearned)} Sätze` });
   const talks = (n) => ({ label: `nach ${n} Gesprächen`, ok: (c) => c.talkRuns >= n, left: (c) => `noch ${Math.max(0, n - c.talkRuns)} ${n - c.talkRuns === 1 ? 'Gespräch' : 'Gespräche'}` });
@@ -28,6 +30,13 @@
   const go = (r) => () => WSK.app.go(r);
 
   const RECS = [
+    { id: 'voice', emoji: '🔊', cat: 'Ton', prio: 95, keep: true, confirmHide: true, gate: { label: 'solange die Stimme einfach klingt', ok: (c) => c.ttsOk && c.voiceQ !== 'high', left: () => '' },
+      title: 'Bessere Stimme installieren',
+      text: (c) => (c.voiceQ === 'none'
+        ? 'Auf diesem Gerät ist keine spanische Stimme installiert. Lade eine herunter – sonst klingen Wörter, Gespräche und Podcast fremd.'
+        : `Dein Gerät spricht gerade mit einer einfachen Stimme (${c.voiceName}). Eine „erweiterte“ Stimme klingt deutlich klarer. Das ist eine einmalige Einstellung auf deinem Gerät.`),
+      why: 'Die Stimme kommt vom Gerät, nicht von der App. Einfache Standard-Stimmen klingen oft blechern oder kratzig; erweiterte Stimmen sind natürlicher und besser zu verstehen – gerade beim Hörenlernen.',
+      done: (c) => c.voiceQ === 'high', label: 'Anleitung öffnen', run: () => WSK.voiceHelp() },
     { id: 'backup', emoji: '💾', cat: 'Sicherheit', prio: 90, gate: dayGate(4), title: 'Sichere deinen Lernstand',
       text: 'Dein Fortschritt liegt nur in diesem Browser. Ein Backup dauert 5 Sekunden – und rettet ihn, wenn du das Handy wechselst oder die Browserdaten löschst.',
       why: 'Besonders wichtig auf dem iPhone: Die Home-Bildschirm-App hat einen eigenen Speicher.',
@@ -101,14 +110,15 @@
   const rec = (id) => (WSK.state.recs[id] = WSK.state.recs[id] || {});
   const snoozed = (id) => { const s = WSK.state.recs[id]; return !!(s && s.snooze && s.snooze > D.today()); };
   const tried = (id) => !!(WSK.state.recs[id] && WSK.state.recs[id].tried);
+  const hidden = (id) => !!(WSK.state.recs[id] && WSK.state.recs[id].hidden);
 
   /* aktive Empfehlungen (Tor offen, noch nicht genutzt, nicht vertagt), wichtigste zuerst */
   function active(c) {
-    return RECS.filter((r) => r.gate.ok(c) && !r.done(c) && !tried(r.id) && !snoozed(r.id) && !(r.hideWhen && r.hideWhen(c))).sort((a, b) => b.prio - a.prio);
+    return RECS.filter((r) => r.gate.ok(c) && !r.done(c) && !tried(r.id) && !hidden(r.id) && !snoozed(r.id) && !(r.hideWhen && r.hideWhen(c))).sort((a, b) => b.prio - a.prio);
   }
   function status(r, c) {
     if (r.hideWhen && r.hideWhen(c)) return 'na';
-    if (r.done(c) || tried(r.id)) return 'done';
+    if (r.done(c) || tried(r.id) || hidden(r.id)) return 'done';
     return r.gate.ok(c) ? 'open' : 'locked';
   }
   /* nächstes Tor, das sich bald öffnet (für den Hinweis „noch 12 Wörter bis zum nächsten Tipp“) */
@@ -119,8 +129,10 @@
   const card = (r, c) => `<article class="rec" data-rec="${r.id}">
     <span class="rec-ic">${r.emoji}</span>
     <div class="rec-main"><div class="rec-tag"><span>${esc(r.cat)}</span> · ${esc(r.gate.label)}</div><b>${esc(r.title)}</b>
-      <p>${esc(r.text)}</p><details class="rec-why"><summary>Warum hilft das?</summary><p>${esc(r.why)}</p></details>
-      <div class="row wrap gap"><button type="button" class="btn primary small" data-rec-go="${r.id}">${esc(r.label)}</button><button type="button" class="btn ghost small" data-rec-later="${r.id}">Später</button></div></div></article>`;
+      <p>${esc(fn(r.text, c))}</p><details class="rec-why"><summary>Warum hilft das?</summary><p>${esc(fn(r.why, c))}</p></details>
+      <div class="row wrap gap"><button type="button" class="btn primary small" data-rec-go="${r.id}">${esc(r.label)}</button>${r.confirmHide
+        ? `<button type="button" class="btn ghost small" data-rec-hide="${r.id}">Ausblenden</button>`
+        : `<button type="button" class="btn ghost small" data-rec-later="${r.id}">Später</button>`}</div></div></article>`;
 
   WSK.homeRecs = function () {
     const c = ctx(), list = active(c).slice(0, 2);
@@ -135,14 +147,38 @@
   WSK.bindRecs = function (view) {
     view.querySelectorAll('[data-rec-go]').forEach((b) => b.addEventListener('click', () => {
       const r = byId(b.dataset.recGo); if (!r) return;
-      rec(r.id).tried = D.today(); WSK.save(); r.run();
+      if (!r.keep) { rec(r.id).tried = D.today(); WSK.save(); } // „keep“: bleibt, bis das Problem wirklich gelöst ist
+      r.run();
     }));
+    view.querySelectorAll('[data-rec-hide]').forEach((b) => b.addEventListener('click', () => confirmHide(byId(b.dataset.recHide))));
     view.querySelectorAll('[data-rec-later]').forEach((b) => b.addEventListener('click', () => {
       rec(b.dataset.recLater).snooze = D.add(D.today(), 3); WSK.save(); WSK.app.refresh();
       UI.toast('Alles klar – ich frage in drei Tagen noch einmal.', { icon: '⏰' });
     }));
     const all = view.querySelector('[data-recs-all]'); if (all) all.addEventListener('click', allModal);
   };
+
+  /* Ausblenden nur nach Rückfrage: Hast du es schon gemacht? */
+  function confirmHide(r) {
+    const m = UI.modal(`<div class="confirm"><h3>Schon erledigt?</h3>
+      <p>Hast du auf diesem Gerät schon eine bessere Stimme installiert?</p>
+      <p class="muted small">Ausgeblendet kannst du die Anleitung jederzeit wieder ansehen: <b>Menü → Audio → Stimmen testen</b>. Dort lässt sich der Hinweis auch wieder auf der Startseite einblenden.</p>
+      <div class="row end"><button class="btn ghost" data-a="no">Noch nicht</button><button class="btn primary" data-a="yes">Ja, schon gemacht</button></div></div>`, { cls: 'small' });
+    m.el.addEventListener('click', (e) => {
+      const a = e.target.closest('[data-a]'); if (!a) return;
+      m.close();
+      if (a.dataset.a === 'yes') {
+        rec(r.id).hidden = D.today(); WSK.save(); WSK.app.refresh();
+        UI.toast('Hinweis ausgeblendet. Die Anleitung findest du unter Menü → Audio.', { icon: '🔊', ms: 4200 });
+      } else UI.toast('Alles klar – ich lasse den Hinweis stehen, bis die Stimme besser ist.', { icon: '🔊', ms: 3600 });
+    });
+  }
+  /* Auch von den Einstellungen aus: Hinweis wieder auf der Startseite anzeigen */
+  WSK.recVoiceHidden = () => hidden('voice');
+  WSK.recVoiceShow = () => { rec('voice').hidden = null; WSK.save(); };
+
+  /* Stimmen werden vom Browser oft erst nach dem Start geladen – dann Startseite neu zeichnen */
+  document.addEventListener('wsk:voices', () => { if (WSK.app && WSK.app.route && WSK.app.route() === 'home') WSK.app.refresh(); });
 
   function allModal() {
     const c = ctx();
@@ -155,7 +191,7 @@
         ${s === 'open' ? `<button type="button" class="btn small primary" data-rec-open="${r.id}">Los</button>` : ''}</div>`).join('')}</div></div>`);
     m.el.addEventListener('click', (e) => {
       const b = e.target.closest('[data-rec-open]'); if (!b) return;
-      const r = byId(b.dataset.recOpen); rec(r.id).tried = D.today(); WSK.save(); m.close(); r.run();
+      const r = byId(b.dataset.recOpen); if (!r.keep) { rec(r.id).tried = D.today(); WSK.save(); } m.close(); r.run();
     });
   }
 

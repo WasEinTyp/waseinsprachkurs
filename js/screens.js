@@ -700,7 +700,8 @@
         <div class="set-row col"><div><b>Sprechtempo</b></div>
           <div class="range-row"><input type="range" min="0.5" max="1.2" step="0.05" data-set="rate" value="${st.rate}"><output data-out="rate">${st.rate}</output></div></div>
         <div class="set-row"><div><b>Klingt kratzig oder undeutlich?</b><span>Aktuell: ${WSK.tts.voice() ? `${esc(WSK.tts.voice().name)} · ${WSK.tts.qualityLabel(WSK.tts.voice())}` : 'keine spanische Stimme gefunden'}</span></div>
-          <button type="button" class="btn ghost small" data-voicehelp>Stimmen testen</button></div>
+          <button type="button" class="btn ghost small" data-voicehelp>Stimmen & Anleitung</button></div>
+        ${WSK.recVoiceHidden && WSK.recVoiceHidden() ? `<div class="set-row"><div><b>Hinweis auf der Startseite</b><span>Du hast ihn ausgeblendet.</span></div><button type="button" class="btn ghost small" data-voicehint>Wieder anzeigen</button></div>` : ''}
         ${sw('sfx', 'Soundeffekte', '')}
         <div class="row"><button class="btn ghost" data-test>▶ Stimme testen</button></div>
       </section>
@@ -766,6 +767,8 @@
       apply(sg.dataset.seg, b.dataset.v);
     }));
     view.querySelector('[data-voicehelp]').addEventListener('click', () => WSK.voiceHelp());
+    const vh = view.querySelector('[data-voicehint]');
+    if (vh) vh.addEventListener('click', () => { WSK.recVoiceShow(); UI.toast('Der Hinweis erscheint wieder auf der Startseite, solange die Stimme nur Standard-Qualität hat.', { icon: '🔊', ms: 4200 }); WSK.app.refresh(); });
     view.querySelector('[data-test]').addEventListener('click', () => WSK.tts.speak('¡Hola! Me llamo Sol. ¿Qué tal? Vamos a aprender español juntos.'));
     view.querySelector('[data-export]').addEventListener('click', () => {
       const blob = new Blob([WSK.exportData()], { type: 'application/json' });
